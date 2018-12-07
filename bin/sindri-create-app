@@ -94,7 +94,7 @@ program
     await render(path.join(LOCAL_DIRECTORY, 'apps', answers.app, 'controllers', CONTROLLER_FILE_NAME), {
       CREATED_DATE: moment().format('L'),
       APP: answers.app,
-      AUTHOR: require('../package').author,
+      AUTHOR: require(path.join(LOCAL_DIRECTORY, 'package.json')).author,
       CONTROLLER_FILE_NAME,
       CONTROLLER_NAME: changeCase.pascalCase(answers.controller)
     })
