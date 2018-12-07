@@ -1,0 +1,225 @@
+#!/usr/bin/env node
+/**
+ * **Created on 06/12/18**
+ *
+ * bin/sindri-create.js
+ *
+ * @author André Timermann <andre.timermann@smarti.io>
+ *
+ *  Cria novo projeto Sindri Framework basado em um template
+ *
+ *  Importante Manter atualizado sempre que realizar alteração no sindri framework
+ *
+ *  Manter controle sobre a versão compatível com Sindri Framework, validando.
+ *
+ */
+'use strict'
+
+const program = require('commander')
+const emptyDir = require('empty-dir')
+const fs = require('fs-extra')
+const path = require('path')
+const inquirer = require('inquirer')
+const {spawn} = require('child_process')
+const semver = require('semver')
+const moment = require('moment')
+moment.locale('pt-br')
+
+const TEMPLATE_DIRECTORY = path.join(__dirname, '../template')
+const LOCAL_DIRECTORY = process.cwd()
+
+const INSTALL_DEPENDENCIES_SCRIPT = path.join(__dirname, '../scripts/install_dependencies.sh')
+
+program
+  .description('Cria um novo projeto com os arquivos necessários utilizando o Sindri Framework.')
+  .parse(process.argv);
+
+
+(async () => {
+
+  try {
+
+
+    // Traduzir
+    let questions = [
+      {
+        name: 'name',
+        message: 'Nome do projeto?',
+        default: path.basename(process.cwd()),
+        validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
+      },
+      {
+        name: 'description',
+        message: 'Descrição do projeto:',
+        validate: input => input !== ''
+      },
+      {
+        name: 'version',
+        message: 'Versão',
+        default: '0.0.1',
+        validate: input => (semver.valid(input) === null) ? 'Versão inválida' : true
+      },
+      {
+        name: 'author',
+        message: 'Seu nome:',
+        validate: input => input !== ''
+      },
+      {
+        name: 'mail',
+        message: 'Informe um e-mail válido',
+        validate: input => input.match(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/) ? true : 'Informe um e-mail válido'
+      },
+      {
+        name: 'app',
+        message: 'Você precisa criar pelo menos um app para este projeto, selecione um nome:',
+        default: path.basename(process.cwd()),
+        validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
+      },
+      // {
+      //   type: 'checkbox',
+      //   name: 'apps',
+      //   message: 'Selecions os apps que deseja carregar (deve estar instalado via "npm i"):',
+      //   choices: ['sindri-admin']
+      // },
+    ]
+
+    let answers = await inquirer.prompt(questions)
+
+    console.log('Verifique as respostas inseridas:\n')
+    for (let [key, value] of Object.entries(answers)) {
+      console.log(`  ${key}:  ${value}`)
+    }
+
+    console.log('\n ATENÇÃO: Pacote "npx" será intalado globalmente! Pressione ctrl+c para cancelar')
+
+
+    if (!(await inquirer.prompt({name: 'confirm', type: 'confirm', default: false, message: 'Continuar?'})).confirm) {
+      process.exit()
+    }
+
+
+    ////////////////////////////////////////////////////////////
+    // Valida se diretório está vazio
+    ////////////////////////////////////////////////////////////
+    if (!emptyDir.sync(LOCAL_DIRECTORY)) {
+      console.error('Directory is not empty')
+      process.exit(1)
+    }
+
+
+    ////////////////////////////////////////////////////////////
+    // Valida NODEJS VErsion
+    ////////////////////////////////////////////////////////////
+    console.log(`NodeJs Version: ${process.version}`)
+
+    if (semver.lt(process.version, '10.0.0')) {
+      console.error('Required version of nodejs greater than 10.0.0')
+      process.exit(2)
+    }
+
+    // Verifique ultima versão disponível em ~/.pkg-cache. Teste novas versões
+    if (semver.gtr(process.version, '10.4.1')) {
+      console.warn('WARN: If you wanted to compile a project using "node-pkg", remember that it will be compiled with the latest version available for "node-pkg", which is currently 10.4.1')
+    }
+
+    ////////////////////////////////////////////////////////////
+    // Copia Template
+    ////////////////////////////////////////////////////////////
+    console.log(`Criando projeto em ${LOCAL_DIRECTORY}`)
+    await fs.copy(TEMPLATE_DIRECTORY, LOCAL_DIRECTORY)
+
+
+    ////////////////////////////////////////////////////////////
+    // Altera Arquivos
+    ////////////////////////////////////////////////////////////
+
+    ////// package.json //////
+    await render(path.join(LOCAL_DIRECTORY, 'package.json'), {
+      PACKAGE_NAME: answers.name,
+      PACKAGE_DESCRIPTION: answers.description,
+      PACKAGE_AUTHOR: `${answers.author} <${answers.mail}>`,
+      PACKAGE_VERSION: answers.version,
+      PACKAGE_MAIN: 'main.js',
+      PACKAGE_BUILD: 'npx pkg -t node10-linux-x64 --out-path build .'
+    })
+
+
+    ////// main.js //////
+    await render(path.join(LOCAL_DIRECTORY, 'main.js'), {
+      CREATED_DATE: moment().format('L'),
+      NAME: answers.name,
+      DESCRIPTION: answers.description,
+      AUTHOR: `${answers.author} <${answers.mail}>`,
+      MAIN: 'main.js',
+    })
+
+    ////// helloWorld.js //////
+    await render(path.join(LOCAL_DIRECTORY, 'apps', '__app_template', 'controllers', 'helloWorld.js'), {
+      CREATED_DATE: moment().format('L'),
+      APP: answers.app,
+      AUTHOR: `${answers.author} <${answers.mail}>`,
+    })
+
+    ////////////////////////////////////////////////////////////
+    // Renomeia Diretório app
+    ////////////////////////////////////////////////////////////
+
+    console.log(`Criando app "${answers.app}"`)
+    await fs.move(path.join(LOCAL_DIRECTORY, 'apps', '__app_template'), path.join(LOCAL_DIRECTORY, 'apps', answers.app))
+
+    ////////////////////////////////////////////////////////////
+    // Instala Dependencias (Deve ficao no final ou então converter para promessa)
+    ////////////////////////////////////////////////////////////
+    const hdle = spawn(INSTALL_DEPENDENCIES_SCRIPT)
+    hdle.stdout.on('data', data => console.log(data.toString()))
+    hdle.stderr.on('data', data => console.error(data.toString()))
+
+    hdle.on('close', (code) => {
+
+      if (code === 0) {
+
+        console.log('\n------------------------------------')
+        console.log('Projeto criado com sucesso!')
+        console.log('\nPara testar, execute o script: \n\t\t"sindri install-assets"')
+        console.log('\nEm seguida:\n\t\t "node main.js"')
+        console.log('------------------------------------\n\n')
+
+      } else {
+
+        console.log(`child process exited with code ${code}`)
+
+      }
+
+    })
+
+
+  } catch (e) {
+
+    console.error(e.stack)
+    process.exit()
+
+  }
+
+})()
+
+
+/**
+ * Abre um arquivo template, altera variaveis e salva novamente
+ *
+ * @param file    {string}  Arquivo à ser editado
+ * @param locals  {object}  Dicionario com a lista de bustituição
+ *
+ * @returns {Promise<void>}
+ */
+async function render(file, locals) {
+
+
+  let content = (await fs.readFile(file)).toString()
+
+  for (let [key, value] of Object.entries(locals)) {
+    content = content.split(`{{${key}}}`).join(value)
+  }
+
+  await fs.writeFile(file, content)
+
+}

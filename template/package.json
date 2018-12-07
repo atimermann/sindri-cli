@@ -1,0 +1,20 @@
+{
+  "name": "{{PACKAGE_NAME}}",
+  "version": "{{PACKAGE_VERSION}}",
+  "bin": "{{PACKAGE_MAIN}}",
+  "description": "{{PACKAGE_DESCRIPTION}}",
+  "main": "{{PACKAGE_MAIN}}",
+  "scripts": {
+    "build": "{{PACKAGE_BUILD}}",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "{{PACKAGE_AUTHOR}}",
+  "license": "ISC",
+  "pkg": {
+    "scripts": "apps/**/controllers/*.js",
+    "assets": [
+      "apps/**/views/*",
+      "public"
+    ]
+  }
+}

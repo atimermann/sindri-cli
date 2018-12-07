@@ -1,0 +1,28 @@
+{
+  "name": "sindri-cli",
+  "version": "2.0.0",
+  "description": "Conjuntos de scripts para auxiliar no desenvolvimento de projetos criados com Sindri Framework.",
+  "main": "index.js",
+  "bin": {
+    "sindri": "bin/sindri",
+    "sindri-create": "bin/sindri-create",
+    "sindri-install-assets": "bin/sindri-install-assets"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli"
+  ],
+  "author": "André Timermann",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^2.19.0",
+    "empty-dir": "^1.0.0",
+    "eslint": "^5.9.0",
+    "fs-extra": "^7.0.1",
+    "inquirer": "latest",
+    "moment": "^2.22.2",
+    "semver": "^5.6.0"
+  }
+}

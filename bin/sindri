@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+/**
+ * Inicializa Script do Sindri
+ *
+ */
+
+const path = require('path')
+const program = require('commander')
+
+const sindriCliPackageJson = require(path.join(__dirname, '../package'))
+
+program
+  .version(sindriCliPackageJson.version)
+  .command('create', 'Cria um novo projeto com os arquivos necessários utilizando o Sindri Framework.')
+  .command('install-assets', 'Copia assets (arquivos estáticos) das apps para pasta public ou servidor CDN.')
+  .command('build', 'Empacota o projeto em um executável utilizando a ferramenta node-pkg para distribuição, ocultando código fonte.')
+  .command('create-app', 'Cria novo app baseado no template.')
+
+
+program.on('--help', function () {
+  console.log('\nDescrição:')
+  console.log('  ' + sindriCliPackageJson.description)
+  console.log('\n')
+})
+
+
+// Deve ser executado posteriormente (não encadear)
+program.parse(process.argv)
+
+
