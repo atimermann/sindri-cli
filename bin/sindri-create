@@ -25,17 +25,17 @@ const semver = require('semver')
 const moment = require('moment')
 moment.locale('pt-br')
 
-const TEMPLATE_DIRECTORY = path.join(__dirname, '../template')
+const TEMPLATE_DIRECTORY = path.join(__dirname, '../template/project')
 const LOCAL_DIRECTORY = process.cwd()
 
 const INSTALL_DEPENDENCIES_SCRIPT = path.join(__dirname, '../scripts/install_dependencies.sh')
 
 program
   .description('Cria um novo projeto com os arquivos necessários utilizando o Sindri Framework.')
-  .parse(process.argv);
+  .parse(process.argv)
 
 
-(async () => {
+;(async () => {
 
   try {
 
@@ -45,7 +45,7 @@ program
       {
         name: 'name',
         message: 'Nome do projeto?',
-        default: path.basename(process.cwd()),
+        default: path.basename(LOCAL_DIRECTORY),
         validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
       },
       {
@@ -72,7 +72,7 @@ program
       {
         name: 'app',
         message: 'Você precisa criar pelo menos um app para este projeto, selecione um nome:',
-        default: path.basename(process.cwd()),
+        default: path.basename(LOCAL_DIRECTORY),
         validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
       },
       // {
@@ -180,8 +180,8 @@ program
 
         console.log('\n------------------------------------')
         console.log('Projeto criado com sucesso!')
-        console.log('\nPara testar, execute o script: \n\t\t"sindri install-assets"')
-        console.log('\nEm seguida:\n\t\t "node main.js"')
+        console.log('\nPara testar, execute o script: \n\t"sindri install-assets"')
+        console.log('\nEm seguida:\n\t "node main.js"')
         console.log('------------------------------------\n\n')
 
       } else {

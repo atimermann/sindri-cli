@@ -1,0 +1,137 @@
+#!/usr/bin/env node
+/**
+ * **Created on 07/12/18**
+ *
+ * bin/create-app
+ * @author André Timermann <andre.timermann@smarti.io>
+ *
+ */
+'use strict'
+
+const program = require('commander')
+const path = require('path')
+const inquirer = require('inquirer')
+const fs = require('fs-extra')
+const changeCase = require('change-case')
+
+const moment = require('moment')
+moment.locale('pt-br')
+
+const LOCAL_DIRECTORY = process.cwd()
+const TEMPLATE_APP_DIRECTORY = path.join(__dirname, '../template', 'app')
+program
+  .description('Cria um novo app com os arquivos necessários utilizando o Sindri Framework.')
+  .parse(process.argv)
+
+
+;(async () => {
+
+  try {
+
+
+    ////////////////////////////////////////////////////////////
+    // Valida se Projeto é válido
+    ////////////////////////////////////////////////////////////
+    if (!await fs.pathExists(path.join(LOCAL_DIRECTORY, 'apps'))) {
+      console.error('Project invalid!')
+      process.exit(1)
+    }
+
+
+    ////////////////////////////////////////////////////////////
+    // Questões
+    ////////////////////////////////////////////////////////////
+    // Traduzir
+    let questions = [
+      {
+        name: 'app',
+        message: 'Nome do App?',
+        default: path.basename(LOCAL_DIRECTORY),
+        validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
+      },
+      {
+        name: 'controller',
+        message: 'Nome do controller padrão?',
+        default: 'HelloWorld',
+        validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
+      }
+    ]
+
+    let answers = await inquirer.prompt(questions)
+
+    const APP_DIRECTORY = path.join(LOCAL_DIRECTORY, 'apps', answers.app)
+    const CONTROLLER_FILE_NAME = changeCase.camelCase(answers.controller) + '.js'
+
+    ////////////////////////////////////////////////////////////
+    // Valida se diretório existe
+    ////////////////////////////////////////////////////////////
+    if (await fs.pathExists(APP_DIRECTORY)) {
+      console.error(`Directory '${APP_DIRECTORY}' already exists!`)
+      process.exit(1)
+    }
+
+    ////////////////////////////////////////////////////////////
+    // Copia Template
+    ////////////////////////////////////////////////////////////
+    console.log(`Criando app em ${APP_DIRECTORY}`)
+    await fs.copy(TEMPLATE_APP_DIRECTORY, APP_DIRECTORY)
+
+    ////////////////////////////////////////////////////////////
+    // Renomeia Diretório app
+    ////////////////////////////////////////////////////////////
+
+    console.log(`Criando app "${answers.app}"`)
+    await fs.move(
+      path.join(APP_DIRECTORY, 'controllers', '__controller_template.js'),
+      path.join(APP_DIRECTORY, 'controllers', CONTROLLER_FILE_NAME)
+    )
+
+    ////////////////////////////////////////////////////////////
+    // Altera Arquivos
+    ////////////////////////////////////////////////////////////
+
+    ////// CONTROLLER_FILE_NAME //////
+    await render(path.join(LOCAL_DIRECTORY, 'apps', answers.app, 'controllers', CONTROLLER_FILE_NAME), {
+      CREATED_DATE: moment().format('L'),
+      APP: answers.app,
+      AUTHOR: require('../package').author,
+      CONTROLLER_FILE_NAME,
+      CONTROLLER_NAME: changeCase.pascalCase(answers.controller)
+    })
+
+
+    console.log('\n------------------------------------')
+    console.log('App criado com sucesso!')
+    console.log('\nPara testar, execute o script: \n\t"sindri install-assets"')
+    console.log('\nEm seguida:\n\t "node main.js"')
+    console.log('------------------------------------\n\n')
+
+  } catch (e) {
+
+    console.error(e.stack)
+    process.exit()
+
+  }
+
+})()
+
+
+/**
+ * Abre um arquivo template, altera variaveis e salva novamente
+ *
+ * @param file    {string}  Arquivo à ser editado
+ * @param locals  {object}  Dicionario com a lista de bustituição
+ *
+ * @returns {Promise<void>}
+ */
+async function render(file, locals) {
+
+  let content = (await fs.readFile(file)).toString()
+
+  for (let [key, value] of Object.entries(locals)) {
+    content = content.split(`{{${key}}}`).join(value)
+  }
+
+  await fs.writeFile(file, content)
+
+}

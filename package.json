@@ -17,6 +17,7 @@
   "author": "André Timermann",
   "license": "ISC",
   "dependencies": {
+    "change-case": "^3.0.2",
     "commander": "^2.19.0",
     "empty-dir": "^1.0.0",
     "eslint": "^5.9.0",
