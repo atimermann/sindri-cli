@@ -1,0 +1,88 @@
+#!/usr/bin/env node
+/**
+ * **Created on 06/12/18**
+ *
+ * bin/sindri-build.js
+ *
+ * @author André Timermann <andre.timermann@smarti.io>
+ *
+ * Gera um binário da aplicação no diretório "build"
+ *
+ * Para mais informações pkg -h se necessário adicionar novas customizações do comando
+ *
+ */
+process.env.SUPPRESS_NO_CONFIG_WARNING = true
+process.env.LOGGER_CONSOLE_ENABLED = false
+
+const LOCAL_DIRECTORY = process.cwd()
+const program = require('commander')
+const {spawn} = require('child_process')
+const path = require('path')
+const {validateProject} = require('../library/tool')
+
+
+////////////////////////////////////////////////////////////////////////
+
+program
+  .description('Gera um binário da aplicação no diretório "build".')
+  .option('-t, --targets [targets]', 'Add the specified type of cheese [marble]', 'node10-linux-x64')
+
+program.on('--help', function () {
+  console.log('')
+  console.log('Examples:')
+  console.log('  – Makes executable for particular target machine\n')
+  console.log('      $ pkg -t node6-alpine-x64 index.js\\n\')')
+
+  console.log()
+})
+
+program.parse(process.argv)
+
+
+////////////////////////////////////////////////////////////////////////
+
+;(async () => {
+
+  try {
+
+    if (!validateProject(LOCAL_DIRECTORY)) {
+      console.error('Invalid project')
+      process.exit()
+    }
+
+    if (!LOCAL_DIRECTORY) {
+      console.error('Invalid LOCAL_DIRECTORY')
+      process.exit()
+    }
+
+    const hdle = spawn('npx', ['pkg', '-t', program.targets, '--out-path', 'build', '.'])
+
+    hdle.stdout.on('data', data => console.log(data.toString()))
+    hdle.stderr.on('data', data => console.error(data.toString()))
+
+    hdle.on('close', code => {
+
+      if (code === 0) {
+
+        console.log('\n------------------------------------')
+        console.log(`Binário gerado com sucesso em:\n\t./build/${require(path.join(LOCAL_DIRECTORY, 'package.json')).name}`)
+        console.log('------------------------------------\n\n')
+
+      } else {
+
+        console.log(`child process exited with code ${code}`)
+
+      }
+
+    })
+
+  } catch (e) {
+
+    console.error(e.stackTrace)
+    process.exit()
+
+  }
+
+})()
+
+

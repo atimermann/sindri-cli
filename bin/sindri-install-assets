@@ -1,1 +1,109 @@
 #!/usr/bin/env node
+/**
+ * **Created on 06/12/18**
+ *
+ * bin/sindri-create.js
+ *
+ * @author André Timermann <andre.timermann@smarti.io>
+ *
+ * Copia assets dos projetos para pasta public ou CDN
+ *
+ * TODO: Suporte a CDN (ver como foi implementado no controller do sindri-framework)
+ *
+ */
+
+// Como acessa funções do framework acaba usando o config. Não queremos emitir alerta se o config não existir (puxa padrão)
+process.env.SUPPRESS_NO_CONFIG_WARNING = true
+process.env.LOGGER_CONSOLE_ENABLED = false
+
+const LOCAL_DIRECTORY = process.cwd()
+const path = require('path')
+const fs = require('fs-extra')
+const program = require('commander')
+const {validateProject} = require('../library/tool')
+
+const ApplicationController = require('sindri-framework/library/applicationController')
+
+////////////////////////////////////////////////////////////////////////
+
+program
+  .version(require('../package').version)
+  .description('Copia arquivos estáticos das aplicações para pasta public.')
+  .option('--link', 'Ao contrário de copiar os arquivos estático das aplicações, cria um link simbólico. Útil na fase de desenvolvimento, arquivos são atualizados automaticamente.')
+  .on('--help', function () {
+    console.log('  Explicação:')
+    console.log('')
+    console.log('\tCada app terá seu próprio conjunto de arquivos estáticos (ex: css, img, javascript cliente, etc...) esses arquivos na fase de desenvolvimento ficam localizados no diretório public de cada aplicação para melhor organização.')
+    console.log('\tPorém ao executar a aplicação o Sindri carraga arquivos estáticos de um único diretório na raiz do projeto na pasta public. Necessário então, copiar os arquivos publicos de cada applicação para o público global do projeto (public), isto é feito através deste comando.')
+    console.log('\tFacilita também a configuração de um CDN')
+  })
+  .parse(process.argv)
+
+
+////////////////////////////////////////////////////////////////////////
+
+;(async () => {
+
+  try {
+
+    if (!validateProject(LOCAL_DIRECTORY)) {
+      console.error('Invalid project')
+      process.exit()
+    }
+
+    if (!LOCAL_DIRECTORY) {
+      console.error('Invalid LOCAL_DIRECTORY')
+      process.exit()
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Carrega Aplicação
+    ////////////////////////////////////////////////////////////////////////
+    let Application = require(path.join(LOCAL_DIRECTORY, 'main.js'))
+    let application = Application.getApplicationData()
+
+    ////////////////////////////////////////////////////////////////////////
+    // Limpa diretório public
+    ////////////////////////////////////////////////////////////////////////
+
+    console.log('Limpando diretório "public"...')
+    await fs.remove(path.join(LOCAL_DIRECTORY, 'public'))
+
+    ////////////////////////////////////////////////////////////////////////
+    // Copia ou cria link dos assets
+    ////////////////////////////////////////////////////////////////////////
+    for (let app of await ApplicationController.getApps(application.applications)) {
+
+      let source = path.join(app.path, 'assets')
+
+      if (await fs.pathExists(source)) {
+
+        let destiny = path.join(LOCAL_DIRECTORY, 'public', app.applicationName, app.appName)
+
+        if (program.link) {
+
+          console.log(`Criando link simbólico de "${path.relative(LOCAL_DIRECTORY, source)}" para "${path.relative(LOCAL_DIRECTORY, destiny)}" `)
+          await fs.ensureSymlink(source, destiny)
+
+
+        } else {
+
+          console.log(`Copiando "${path.relative(LOCAL_DIRECTORY, source)}" para "${path.relative(LOCAL_DIRECTORY, destiny)}" `)
+          await fs.copy(source, destiny)
+
+        }
+      }
+
+    }
+
+    console.log('\nAssets instalados com sucesso!\n')
+
+
+  } catch (e) {
+
+    console.error(e.stack)
+    process.exit()
+
+  }
+
+})()

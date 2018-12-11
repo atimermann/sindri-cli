@@ -13,6 +13,7 @@ const path = require('path')
 const inquirer = require('inquirer')
 const fs = require('fs-extra')
 const changeCase = require('change-case')
+const {validateProject, render} = require('../library/tool')
 
 const moment = require('moment')
 moment.locale('pt-br')
@@ -28,6 +29,16 @@ program
 
   try {
 
+
+    if (!validateProject(LOCAL_DIRECTORY)) {
+      console.error('Invalid project')
+      process.exit()
+    }
+
+    if (!LOCAL_DIRECTORY) {
+      console.error('Invalid LOCAL_DIRECTORY')
+      process.exit()
+    }
 
     ////////////////////////////////////////////////////////////
     // Valida se Projeto é válido
@@ -115,23 +126,3 @@ program
 
 })()
 
-
-/**
- * Abre um arquivo template, altera variaveis e salva novamente
- *
- * @param file    {string}  Arquivo à ser editado
- * @param locals  {object}  Dicionario com a lista de bustituição
- *
- * @returns {Promise<void>}
- */
-async function render(file, locals) {
-
-  let content = (await fs.readFile(file)).toString()
-
-  for (let [key, value] of Object.entries(locals)) {
-    content = content.split(`{{${key}}}`).join(value)
-  }
-
-  await fs.writeFile(file, content)
-
-}

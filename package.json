@@ -24,6 +24,8 @@
     "fs-extra": "^7.0.1",
     "inquirer": "latest",
     "moment": "^2.22.2",
-    "semver": "^5.6.0"
+    "semver": "^5.6.0",
+    "sindri-framework": "^2.0.4",
+    "subclassof": "^0.2.0"
   }
 }

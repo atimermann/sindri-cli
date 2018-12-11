@@ -7,9 +7,7 @@
  * @author André Timermann <andre.timermann@smarti.io>
  *
  *  Cria novo projeto Sindri Framework basado em um template
- *
  *  Importante Manter atualizado sempre que realizar alteração no sindri framework
- *
  *  Manter controle sobre a versão compatível com Sindri Framework, validando.
  *
  */
@@ -24,11 +22,14 @@ const {spawn} = require('child_process')
 const semver = require('semver')
 const moment = require('moment')
 moment.locale('pt-br')
+const {render} = require('../library/tool')
 
 const TEMPLATE_DIRECTORY = path.join(__dirname, '../template/project')
 const LOCAL_DIRECTORY = process.cwd()
 
 const INSTALL_DEPENDENCIES_SCRIPT = path.join(__dirname, '../scripts/install_dependencies.sh')
+
+
 
 program
   .description('Cria um novo projeto com os arquivos necessários utilizando o Sindri Framework.')
@@ -38,6 +39,13 @@ program
 ;(async () => {
 
   try {
+
+
+
+    if (!LOCAL_DIRECTORY) {
+      console.error('Invalid LOCAL_DIRECTORY')
+      process.exit()
+    }
 
 
     // Traduzir
@@ -174,7 +182,7 @@ program
     hdle.stdout.on('data', data => console.log(data.toString()))
     hdle.stderr.on('data', data => console.error(data.toString()))
 
-    hdle.on('close', (code) => {
+    hdle.on('close', code => {
 
       if (code === 0) {
 
@@ -202,24 +210,3 @@ program
 
 })()
 
-
-/**
- * Abre um arquivo template, altera variaveis e salva novamente
- *
- * @param file    {string}  Arquivo à ser editado
- * @param locals  {object}  Dicionario com a lista de bustituição
- *
- * @returns {Promise<void>}
- */
-async function render(file, locals) {
-
-
-  let content = (await fs.readFile(file)).toString()
-
-  for (let [key, value] of Object.entries(locals)) {
-    content = content.split(`{{${key}}}`).join(value)
-  }
-
-  await fs.writeFile(file, content)
-
-}
