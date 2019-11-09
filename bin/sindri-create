@@ -29,8 +29,6 @@ const LOCAL_DIRECTORY = process.cwd()
 
 const INSTALL_DEPENDENCIES_SCRIPT = path.join(__dirname, '../scripts/install_dependencies.sh')
 
-
-
 program
   .description('Cria um novo projeto com os arquivos necessários utilizando o Sindri Framework.')
   .parse(process.argv)
@@ -109,7 +107,7 @@ program
     ////////////////////////////////////////////////////////////
     if (!emptyDir.sync(LOCAL_DIRECTORY)) {
 
-      console.error('Directory is not empty.')
+      console.warn('WARNING: Directory is not empty.')
       if (!(await inquirer.prompt({name: 'confirm', type: 'confirm', default: false, message: 'Continuar?'})).confirm) {
         process.exit(1)
       }
@@ -158,7 +156,7 @@ program
     ////// main.js //////
     await render(path.join(LOCAL_DIRECTORY, 'main.js'), {
       CREATED_DATE: moment().format('L'),
-      NAME: answers.name,
+      NAME: answers.name.replace(/-/g, "_"),
       DESCRIPTION: answers.description,
       AUTHOR: `${answers.author} <${answers.mail}>`,
       MAIN: 'main.js',

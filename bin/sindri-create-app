@@ -58,13 +58,13 @@ program
         name: 'app',
         message: 'Nome do App?',
         default: path.basename(LOCAL_DIRECTORY),
-        validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
+        validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9 -)'
       },
       {
         name: 'controller',
         message: 'Nome do controller padrão?',
         default: 'HelloWorld',
-        validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
+        validate: input => input.match(/^[a-zA-Z0-9]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
       }
     ]
 
@@ -104,7 +104,7 @@ program
     ////// CONTROLLER_FILE_NAME //////
     await render(path.join(LOCAL_DIRECTORY, 'apps', answers.app, 'controllers', CONTROLLER_FILE_NAME), {
       CREATED_DATE: moment().format('L'),
-      APP: answers.app,
+      APP: answers.app.replace(/-/g, '_'),
       AUTHOR: require(path.join(LOCAL_DIRECTORY, 'package.json')).author,
       CONTROLLER_FILE_NAME,
       CONTROLLER_NAME: changeCase.pascalCase(answers.controller)
