@@ -12,5 +12,5 @@ if ! [[ -x "$(command -v npx)" ]]; then
 fi
 
 npm i --save --loglevel warn sindri-framework
-npm i --save --loglevel warn pkg
+npm i --save --loglevel warn pkg@4.3.4
 npm i --save --loglevel warn config

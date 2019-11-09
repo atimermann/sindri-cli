@@ -36,6 +36,15 @@ Descrição:
 
 ```
 
+## Instruções de Atualização
+
+Ao atualizar o projeto verificar se foi atualizado a versão do:
+
+* **pkg:** deve ser verificada a versão utilizada no sindri-framework ou seja a ultima (atualizar lá se necessário)
+* **node:** PKG normalmente não está atualizado com a ultima versão do node, deve ser mantido a ultima versão compatível com pkg (veja documentação do sindri-framework)
+
+
 ## Versões Testadas
 
-* Sindri Cli 2.0.1 => Sindri Framework 2.0.5
+* Sindri Cli@2.0.1 => Sindri Framework@2.0
+* Sindri Cli@2.1.0 => Sindri Framework@2.1 => pkg@4.3.4  

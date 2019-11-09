@@ -41,7 +41,6 @@ program
   try {
 
 
-
     if (!LOCAL_DIRECTORY) {
       console.error('Invalid LOCAL_DIRECTORY')
       process.exit()
@@ -98,8 +97,7 @@ program
       console.log(`  ${key}:  ${value}`)
     }
 
-    console.log('\n ATENÇÃO: Pacote "npx" será intalado globalmente! Pressione ctrl+c para cancelar')
-
+    // TODO: ==em teste== REMOVIDO, DEVE SER USADO LOCALMENTE console.log('\n ATENÇÃO: Pacote "npx" será intalado globalmente! Pressione ctrl+c para cancelar')
 
     if (!(await inquirer.prompt({name: 'confirm', type: 'confirm', default: false, message: 'Continuar?'})).confirm) {
       process.exit()
@@ -116,18 +114,19 @@ program
 
 
     ////////////////////////////////////////////////////////////
-    // Valida NODEJS VErsion
+    // Valida NODEJS Version
+    // Sempre atualizar com a ultima versão do node disponível no PKG e configurado no sindri-framework
     ////////////////////////////////////////////////////////////
     console.log(`NodeJs Version: ${process.version}`)
 
-    if (semver.lt(process.version, '10.0.0')) {
-      console.error('Required version of nodejs greater than 10.0.0')
+    if (semver.lt(process.version, '12.0.0')) {
+      console.error('Required version of nodejs greater than 12.0.0')
       process.exit(2)
     }
 
     // Verifique ultima versão disponível em ~/.pkg-cache. Teste novas versões
-    if (semver.gtr(process.version, '10.4.1')) {
-      console.warn('WARN: If you wanted to compile a project using "node-pkg", remember that it will be compiled with the latest version available for "node-pkg", which is currently 10.4.1')
+    if (semver.gtr(process.version, '12.2.0')) {
+      console.warn('WARN: If you wanted to compile a project using "node-pkg", remember that it will be compiled with the latest version available for "node-pkg", which is currently 12.2.0 LTS')
     }
 
     ////////////////////////////////////////////////////////////
@@ -148,7 +147,8 @@ program
       PACKAGE_AUTHOR: `${answers.author} <${answers.mail}>`,
       PACKAGE_VERSION: answers.version,
       PACKAGE_MAIN: 'main.js',
-      PACKAGE_BUILD: 'npx pkg -t node10-linux-x64 --out-path build .'
+      // Sempre atualizar com a ultima versão do node disponível no PKG e configurado no sindri-framework
+      PACKAGE_BUILD: 'npx pkg -t node12-linux-x64 --out-path build .'
     })
 
 

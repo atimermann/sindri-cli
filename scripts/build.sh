@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-npx pkg -t node10-linux-x64 --out-path build .
+npx pkg -t node12-linux-x64 --out-path build .
