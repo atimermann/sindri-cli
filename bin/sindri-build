@@ -25,7 +25,7 @@ const {validateProject} = require('../library/tool')
 
 program
   .description('Gera um binário da aplicação no diretório "build".')
-  .option('-t, --targets [targets]', 'Add the specified type of cheese [marble]', 'node12-linux-x64')
+  .option('-t, --targets [targets]', 'Add the specified type of cheese [marble]', undefined)
 
 program.on('--help', function () {
   console.log('')
@@ -52,6 +52,11 @@ program.parse(process.argv)
 
     if (!LOCAL_DIRECTORY) {
       console.error('Invalid LOCAL_DIRECTORY')
+      process.exit()
+    }
+
+    if (program.targets === undefined){
+      console.error('Use the command "npm run build" for default target')
       process.exit()
     }
 

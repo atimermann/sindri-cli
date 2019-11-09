@@ -108,8 +108,11 @@ program
     // Valida se diretório está vazio
     ////////////////////////////////////////////////////////////
     if (!emptyDir.sync(LOCAL_DIRECTORY)) {
-      console.error('Directory is not empty')
-      process.exit(1)
+
+      console.error('Directory is not empty.')
+      if (!(await inquirer.prompt({name: 'confirm', type: 'confirm', default: false, message: 'Continuar?'})).confirm) {
+        process.exit(1)
+      }
     }
 
 

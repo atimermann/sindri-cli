@@ -22,7 +22,7 @@ const fs = require('fs-extra')
 const program = require('commander')
 const {validateProject} = require('../library/tool')
 
-const ApplicationController = require('sindri-framework/library/applicationController')
+const ApplicationController = require('sindri-framework/src/library/applicationController')
 
 ////////////////////////////////////////////////////////////////////////
 
