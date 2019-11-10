@@ -36,13 +36,26 @@ Descrição:
 
 ```
 
-## Instruções de Atualização
+## Instruções de Atualização do sindri-cli (Guia de Desenvolvimento)
 
 Ao atualizar o projeto verificar se foi atualizado a versão do:
 
 * **pkg:** deve ser verificada a versão utilizada no sindri-framework ou seja a ultima (atualizar lá se necessário)
 * **node:** PKG normalmente não está atualizado com a ultima versão do node, deve ser mantido a ultima versão compatível com pkg (veja documentação do sindri-framework)
 
+**IMPORTANTE:** No arquivo modelo "template/project/package.json" necessário adicionar alguns modulos do node com 
+incompatibilidade com pkg ou que por qualquer motivo não são adicionados automaticamente ao binario criado pelo pkg
+ex: config
+
+Testar criando novo projeto e testando a execução:
+```
+  node main.js
+```
+  
+Compilação:
+```
+   npm run build
+```
 
 ## Versões Testadas
 

@@ -14,7 +14,10 @@
     "scripts": "apps/**/controllers/*.js",
     "assets": [
       "apps/**/views/*",
-      "public"
+      "public",
+      "node_modules/sc-broker",
+      "node_modules/socketcluster",
+      "node_modules/config"
     ]
   }
 }
