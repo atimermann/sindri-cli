@@ -1,6 +1,6 @@
 {
   "name": "sindri-cli",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "description": "Conjuntos de scripts para auxiliar no desenvolvimento de projetos criados com Sindri Framework.",
   "main": "index.js",
   "bin": {
