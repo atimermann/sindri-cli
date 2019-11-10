@@ -156,7 +156,7 @@ program
     ////// main.js //////
     await render(path.join(LOCAL_DIRECTORY, 'main.js'), {
       CREATED_DATE: moment().format('L'),
-      NAME: answers.name.replace(/-/g, "_"),
+      NAME: answers.name.replace(/-/g, '_'),
       DESCRIPTION: answers.description,
       AUTHOR: `${answers.author} <${answers.mail}>`,
       MAIN: 'main.js',
