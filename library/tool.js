@@ -27,28 +27,30 @@ module.exports = {
    */
   validateProject(directory) {
 
-    try {
 
-      let project = require(path.join(directory, 'main'))
+    let project = require(path.join(directory, 'main'))
 
-      if (SubClassOf(project.constructor, Application, true)) {
+    if (SubClassOf(project.constructor, Application, true)) {
 
-        if (project.name !== undefined
-          && project.path !== undefined
-          && project.applications !== undefined
-          && project.options !== undefined
-          && project.id !== undefined) {
+      if (project.name !== undefined
+        && project.path !== undefined
+        && project.applications !== undefined
+        && project.options !== undefined
+        && project.id !== undefined) {
 
-          return true
-        }
+        return true
+      }else{
+
+        console.error('Invalid project: Check if main.js is returning instance of sindri-framework/instance')
+        process.exit()
 
       }
 
-      return false
+    } else {
 
-    } catch (e) {
+      console.error('Invalid project: Project must be instance of sindri-framework/application')
+      process.exit()
 
-      return false
     }
 
   },

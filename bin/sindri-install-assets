@@ -46,10 +46,7 @@ program
 
   try {
 
-    if (!validateProject(LOCAL_DIRECTORY)) {
-      console.error('Invalid project')
-      process.exit()
-    }
+    validateProject(LOCAL_DIRECTORY)
 
     if (!LOCAL_DIRECTORY) {
       console.error('Invalid LOCAL_DIRECTORY')
