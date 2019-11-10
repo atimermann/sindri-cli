@@ -176,6 +176,8 @@ program
     console.log(`Criando app "${answers.app}"`)
     await fs.move(path.join(LOCAL_DIRECTORY, 'apps', '__app_template'), path.join(LOCAL_DIRECTORY, 'apps', answers.app))
 
+
+
     ////////////////////////////////////////////////////////////
     // Instala Dependencias (Deve ficao no final ou então converter para promessa)
     ////////////////////////////////////////////////////////////
@@ -191,6 +193,8 @@ program
         console.log('Projeto criado com sucesso!')
         console.log('\nPara testar, execute o script: \n\t"sindri install-assets"')
         console.log('\nEm seguida:\n\t "node main.js"')
+        console.log('\nPara atualizar o package.json (como adicionar repositório git):\n\t "npm init"')
+        console.log('\nPara gerar binário:\n\t "npm run build"')
         console.log('------------------------------------\n\n')
 
       } else {
