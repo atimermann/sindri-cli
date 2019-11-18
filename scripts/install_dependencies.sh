@@ -17,3 +17,5 @@ npm i --save --loglevel warn sindri-framework@2.1
 npm i --save --loglevel warn pkg@4.4.0
 # Foi incorporado ao projeto  TODO: remover depois de testado
 # npm i --save --loglevel warn config
+
+npm i --save-dev --loglevel warn nodemon

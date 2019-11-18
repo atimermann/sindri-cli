@@ -6,6 +6,7 @@
   "main": "{{PACKAGE_MAIN}}",
   "scripts": {
     "build": "{{PACKAGE_BUILD}}",
+    "dev": "npx nodemon main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "{{PACKAGE_AUTHOR}}",

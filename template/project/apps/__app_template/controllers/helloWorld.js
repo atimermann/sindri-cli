@@ -33,8 +33,10 @@ class HelloWorldController extends Controller {
     // Rota pode ser acessado via "this.router"
     // Documentação como utilizar a rota usda no framework aqui:
     //          https://expressjs.com/pt-br/guide/routing.html#express-router
-    // Em português:
     //          https://expressjs.com/pt-br/guide/using-middleware.html
+    // Autenticação:
+    //          https://scotch.io/tutorials/route-middleware-to-check-if-a-user-is-authenticated-in-node-js
+    //
     // Lembre: utilize por exemplo this.router.use(...) em vez de this.use(...)
 
 

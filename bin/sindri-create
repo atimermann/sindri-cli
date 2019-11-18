@@ -29,6 +29,9 @@ const LOCAL_DIRECTORY = process.cwd()
 
 const INSTALL_DEPENDENCIES_SCRIPT = path.join(__dirname, '../scripts/install_dependencies.sh')
 
+// Atualizar sempre que mudar a versão do node no PKG
+const NPM_BUILD_COMMAND = 'npx pkg -t node12-linux-x64 --out-path build . && (cd build && mkdir -p config) && cp config/default.yaml build/config'
+
 program
   .description('Cria um novo projeto com os arquivos necessários utilizando o Sindri Framework.')
   .parse(process.argv)
@@ -97,7 +100,7 @@ program
 
     // TODO: ==em teste== REMOVIDO, DEVE SER USADO LOCALMENTE console.log('\n ATENÇÃO: Pacote "npx" será intalado globalmente! Pressione ctrl+c para cancelar')
 
-    if (!(await inquirer.prompt({name: 'confirm', type: 'confirm', default: false, message: 'Continuar?'})).confirm) {
+    if (!(await inquirer.prompt({name: 'confirm', type: 'confirm', default: true, message: 'Continuar?'})).confirm) {
       process.exit()
     }
 
@@ -148,8 +151,7 @@ program
       PACKAGE_AUTHOR: `${answers.author} <${answers.mail}>`,
       PACKAGE_VERSION: answers.version,
       PACKAGE_MAIN: 'main.js',
-      // Sempre atualizar com a ultima versão do node disponível no PKG e configurado no sindri-framework
-      PACKAGE_BUILD: 'npx pkg -t node12-linux-x64 --out-path build .'
+      PACKAGE_BUILD: NPM_BUILD_COMMAND
     })
 
 
@@ -177,7 +179,6 @@ program
     await fs.move(path.join(LOCAL_DIRECTORY, 'apps', '__app_template'), path.join(LOCAL_DIRECTORY, 'apps', answers.app))
 
 
-
     ////////////////////////////////////////////////////////////
     // Instala Dependencias (Deve ficao no final ou então converter para promessa)
     ////////////////////////////////////////////////////////////
@@ -192,7 +193,7 @@ program
         console.log('\n------------------------------------')
         console.log('Projeto criado com sucesso!')
         console.log('\nPara testar, execute o script: \n\t"sindri install-assets"')
-        console.log('\nEm seguida:\n\t "node main.js"')
+        console.log('\nEm seguida:\n\t "npm run dev"')
         console.log('\nPara atualizar o package.json (como adicionar repositório git):\n\t "npm init"')
         console.log('\nPara gerar binário:\n\t "npm run build"')
         console.log('------------------------------------\n\n')
