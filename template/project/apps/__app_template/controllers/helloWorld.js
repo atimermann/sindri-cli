@@ -29,6 +29,17 @@ class HelloWorldController extends Controller {
    */
   pre() {
 
+    this.use(async (req, res, next) => {
+
+      // Aguarda 1 segundo
+      await this.sleep(1000)
+      logger.info('Middleware executado!')
+
+      // Obrigatório executar no final
+      next()
+
+    });
+
     // Você pode manipular rotas do controller aqui!!! Pode ser usado para criar uma autenticação prévia
     // Rota pode ser acessado via "this.router"
     // Documentação como utilizar a rota usda no framework aqui:
@@ -36,9 +47,6 @@ class HelloWorldController extends Controller {
     //          https://expressjs.com/pt-br/guide/using-middleware.html
     // Autenticação:
     //          https://scotch.io/tutorials/route-middleware-to-check-if-a-user-is-authenticated-in-node-js
-    //
-    // Lembre: utilize por exemplo this.router.use(...) em vez de this.use(...)
-
 
   }
 

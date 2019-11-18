@@ -24,11 +24,9 @@ program
   .description('Cria um novo app com os arquivos necessários utilizando o Sindri Framework.')
   .parse(process.argv)
 
-
 ;(async () => {
 
   try {
-
 
     if (!validateProject(LOCAL_DIRECTORY)) {
       console.error('Invalid project')
@@ -47,7 +45,6 @@ program
       console.error('Project invalid!')
       process.exit(1)
     }
-
 
     ////////////////////////////////////////////////////////////
     // Questões
@@ -109,7 +106,6 @@ program
       CONTROLLER_FILE_NAME,
       CONTROLLER_NAME: changeCase.pascalCase(answers.controller)
     })
-
 
     console.log('\n------------------------------------')
     console.log('App criado com sucesso!')

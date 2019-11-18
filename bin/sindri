@@ -22,8 +22,6 @@ program.on('--help', function () {
   console.log('\n')
 })
 
-
 // Deve ser executado posteriormente (não encadear)
 program.parse(process.argv)
-
 

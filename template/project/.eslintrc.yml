@@ -4,9 +4,13 @@ env:
 extends:
   - 'eslint:recommended'
 parserOptions:
-  ecmaVersion: 2018
-  sourceType: module
+  ecmaVersion: 2019
 rules:
+  eol-last:
+    - error
+  no-multiple-empty-lines:
+    - error
+    - max: 1
   indent:
     - error
     - 2

@@ -39,7 +39,6 @@ program
   })
   .parse(process.argv)
 
-
 ////////////////////////////////////////////////////////////////////////
 
 ;(async () => {
@@ -82,7 +81,6 @@ program
           console.log(`Criando link simbólico de "${path.relative(LOCAL_DIRECTORY, source)}" para "${path.relative(LOCAL_DIRECTORY, destiny)}" `)
           await fs.ensureSymlink(source, destiny)
 
-
         } else {
 
           console.log(`Copiando "${path.relative(LOCAL_DIRECTORY, source)}" para "${path.relative(LOCAL_DIRECTORY, destiny)}" `)
@@ -94,7 +92,6 @@ program
     }
 
     console.log('\nAssets instalados com sucesso!\n')
-
 
   } catch (e) {
 

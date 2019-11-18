@@ -27,7 +27,6 @@ module.exports = {
    */
   validateProject(directory) {
 
-
     let project = require(path.join(directory, 'main'))
 
     if (SubClassOf(project.constructor, Application, true)) {
@@ -55,7 +54,6 @@ module.exports = {
 
   },
 
-
   /**
    * Abre um arquivo template, altera variaveis e salva novamente
    *
@@ -65,7 +63,6 @@ module.exports = {
    * @returns {Promise<void>}
    */
   async render(file, locals) {
-
 
     let content = (await fs.readFile(file)).toString()
 

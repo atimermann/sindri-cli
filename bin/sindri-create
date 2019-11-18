@@ -36,17 +36,14 @@ program
   .description('Cria um novo projeto com os arquivos necessários utilizando o Sindri Framework.')
   .parse(process.argv)
 
-
 ;(async () => {
 
   try {
-
 
     if (!LOCAL_DIRECTORY) {
       console.error('Invalid LOCAL_DIRECTORY')
       process.exit()
     }
-
 
     // Traduzir
     let questions = [
@@ -104,7 +101,6 @@ program
       process.exit()
     }
 
-
     ////////////////////////////////////////////////////////////
     // Valida se diretório está vazio
     ////////////////////////////////////////////////////////////
@@ -115,7 +111,6 @@ program
         process.exit(1)
       }
     }
-
 
     ////////////////////////////////////////////////////////////
     // Valida NODEJS Version
@@ -139,7 +134,6 @@ program
     console.log(`Criando projeto em ${LOCAL_DIRECTORY}`)
     await fs.copy(TEMPLATE_DIRECTORY, LOCAL_DIRECTORY)
 
-
     ////////////////////////////////////////////////////////////
     // Altera Arquivos
     ////////////////////////////////////////////////////////////
@@ -153,7 +147,6 @@ program
       PACKAGE_MAIN: 'main.js',
       PACKAGE_BUILD: NPM_BUILD_COMMAND
     })
-
 
     ////// main.js //////
     await render(path.join(LOCAL_DIRECTORY, 'main.js'), {
@@ -177,7 +170,6 @@ program
 
     console.log(`Criando app "${answers.app}"`)
     await fs.move(path.join(LOCAL_DIRECTORY, 'apps', '__app_template'), path.join(LOCAL_DIRECTORY, 'apps', answers.app))
-
 
     ////////////////////////////////////////////////////////////
     // Instala Dependencias (Deve ficao no final ou então converter para promessa)
@@ -205,7 +197,6 @@ program
       }
 
     })
-
 
   } catch (e) {
 
