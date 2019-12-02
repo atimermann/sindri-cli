@@ -60,4 +60,5 @@ Compilação:
 ## Versões Testadas
 
 * Sindri Cli@2.0.1 => Sindri Framework@2.0
-* Sindri Cli@2.1.0 => Sindri Framework@2.1 => pkg@4.4.0  
+* Sindri Cli@2.1.0 => Sindri Framework@2.1 => pkg@4.4.0
+* Sindri Cli@2.2 => Sindri Framework@2.1.12 => pkg@4.4.0    

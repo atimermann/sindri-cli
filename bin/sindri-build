@@ -11,14 +11,12 @@
  * Para mais informações pkg -h se necessário adicionar novas customizações do comando
  *
  */
-process.env.SUPPRESS_NO_CONFIG_WARNING = true
-process.env.LOGGER_CONSOLE_ENABLED = false
 
-const LOCAL_DIRECTORY = process.cwd()
+const rootPath = process.cwd()
 const program = require('commander')
 const { spawn } = require('child_process')
-const path = require('path')
-const { validateProject } = require('../library/tool')
+const { join } = require('path')
+const { findRootPath, validateProject } = require('../library/tool')
 
 /// /////////////////////////////////////////////////////////////////////
 
@@ -41,22 +39,16 @@ program.parse(process.argv)
 
 ;(async () => {
   try {
-    if (!validateProject(LOCAL_DIRECTORY)) {
-      console.error('Invalid project')
-      process.exit()
-    }
-
-    if (!LOCAL_DIRECTORY) {
-      console.error('Invalid LOCAL_DIRECTORY')
-      process.exit()
-    }
+    const rootPath = await findRootPath()
+    const srcPath = join(rootPath, 'src')
+    await validateProject(srcPath)
 
     if (program.targets === undefined) {
       console.error('Use the command "npm run build" for default target')
       process.exit()
     }
 
-    const hdle = spawn('npx', ['pkg', '-t', program.targets, '--out-path', 'build', '.'])
+    const hdle = spawn('npx', ['pkg', '-t', program.targets, '--out-path', 'build', rootPath])
 
     hdle.stdout.on('data', data => console.log(data.toString()))
     hdle.stderr.on('data', data => console.error(data.toString()))
@@ -64,7 +56,7 @@ program.parse(process.argv)
     hdle.on('close', code => {
       if (code === 0) {
         console.log('\n------------------------------------')
-        console.log(`Binário gerado com sucesso em:\n\t./build/${require(path.join(LOCAL_DIRECTORY, 'package.json')).name}`)
+        console.log(`Binário gerado com sucesso em:\n\t./build/${require(join(rootPath, 'package.json')).name}`)
         console.log('------------------------------------\n\n')
       } else {
         console.log(`child process exited with code ${code}`)
