@@ -16,11 +16,11 @@ process.env.LOGGER_CONSOLE_ENABLED = false
 
 const LOCAL_DIRECTORY = process.cwd()
 const program = require('commander')
-const {spawn} = require('child_process')
+const { spawn } = require('child_process')
 const path = require('path')
-const {validateProject} = require('../library/tool')
+const { validateProject } = require('../library/tool')
 
-////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
 
 program
   .description('Gera um binário da aplicação no diretório "build".')
@@ -37,12 +37,10 @@ program.on('--help', function () {
 
 program.parse(process.argv)
 
-////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
 
 ;(async () => {
-
   try {
-
     if (!validateProject(LOCAL_DIRECTORY)) {
       console.error('Invalid project')
       process.exit()
@@ -53,7 +51,7 @@ program.parse(process.argv)
       process.exit()
     }
 
-    if (program.targets === undefined){
+    if (program.targets === undefined) {
       console.error('Use the command "npm run build" for default target')
       process.exit()
     }
@@ -64,27 +62,16 @@ program.parse(process.argv)
     hdle.stderr.on('data', data => console.error(data.toString()))
 
     hdle.on('close', code => {
-
       if (code === 0) {
-
         console.log('\n------------------------------------')
         console.log(`Binário gerado com sucesso em:\n\t./build/${require(path.join(LOCAL_DIRECTORY, 'package.json')).name}`)
         console.log('------------------------------------\n\n')
-
       } else {
-
         console.log(`child process exited with code ${code}`)
-
       }
-
     })
-
   } catch (e) {
-
     console.error(e.stackTrace)
     process.exit()
-
   }
-
 })()
-

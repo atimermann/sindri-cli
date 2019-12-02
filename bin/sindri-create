@@ -18,11 +18,11 @@ const emptyDir = require('empty-dir')
 const fs = require('fs-extra')
 const path = require('path')
 const inquirer = require('inquirer')
-const {spawn} = require('child_process')
+const { spawn } = require('child_process')
 const semver = require('semver')
 const moment = require('moment')
 moment.locale('pt-br')
-const {render} = require('../library/tool')
+const { render } = require('../library/tool')
 
 const TEMPLATE_DIRECTORY = path.join(__dirname, '../template/project')
 const LOCAL_DIRECTORY = process.cwd()
@@ -37,16 +37,14 @@ program
   .parse(process.argv)
 
 ;(async () => {
-
   try {
-
     if (!LOCAL_DIRECTORY) {
       console.error('Invalid LOCAL_DIRECTORY')
       process.exit()
     }
 
     // Traduzir
-    let questions = [
+    const questions = [
       {
         name: 'name',
         message: 'Nome do projeto?',
@@ -79,7 +77,7 @@ program
         message: 'Você precisa criar pelo menos um app para este projeto, selecione um nome:',
         default: path.basename(LOCAL_DIRECTORY),
         validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
-      },
+      }
       // {
       //   type: 'checkbox',
       //   name: 'apps',
@@ -88,34 +86,43 @@ program
       // },
     ]
 
-    let answers = await inquirer.prompt(questions)
+    const answers = await inquirer.prompt(questions)
 
     console.log('Verifique as respostas inseridas:\n')
-    for (let [key, value] of Object.entries(answers)) {
+    for (const [key, value] of Object.entries(answers)) {
       console.log(`  ${key}:  ${value}`)
     }
 
     // TODO: ==em teste== REMOVIDO, DEVE SER USADO LOCALMENTE console.log('\n ATENÇÃO: Pacote "npx" será intalado globalmente! Pressione ctrl+c para cancelar')
 
-    if (!(await inquirer.prompt({name: 'confirm', type: 'confirm', default: true, message: 'Continuar?'})).confirm) {
+    if (!(await inquirer.prompt({
+      name: 'confirm',
+      type: 'confirm',
+      default: true,
+      message: 'Continuar?'
+    })).confirm) {
       process.exit()
     }
 
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     // Valida se diretório está vazio
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     if (!emptyDir.sync(LOCAL_DIRECTORY)) {
-
       console.warn('WARNING: Directory is not empty.')
-      if (!(await inquirer.prompt({name: 'confirm', type: 'confirm', default: false, message: 'Continuar?'})).confirm) {
+      if (!(await inquirer.prompt({
+        name: 'confirm',
+        type: 'confirm',
+        default: false,
+        message: 'Continuar?'
+      })).confirm) {
         process.exit(1)
       }
     }
 
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     // Valida NODEJS Version
     // Sempre atualizar com a ultima versão do node disponível no PKG e configurado no sindri-framework
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     console.log(`NodeJs Version: ${process.version}`)
 
     if (semver.lt(process.version, '12.0.0')) {
@@ -128,17 +135,17 @@ program
       console.warn('WARN: If you wanted to compile a project using "node-pkg", remember that it will be compiled with the latest version available for "node-pkg", which is currently 12.2.0 LTS')
     }
 
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     // Copia Template
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     console.log(`Criando projeto em ${LOCAL_DIRECTORY}`)
     await fs.copy(TEMPLATE_DIRECTORY, LOCAL_DIRECTORY)
 
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     // Altera Arquivos
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
 
-    ////// package.json //////
+    /// /// package.json //////
     await render(path.join(LOCAL_DIRECTORY, 'package.json'), {
       PACKAGE_NAME: answers.name,
       PACKAGE_DESCRIPTION: answers.description,
@@ -148,40 +155,38 @@ program
       PACKAGE_BUILD: NPM_BUILD_COMMAND
     })
 
-    ////// main.js //////
+    /// /// main.js //////
     await render(path.join(LOCAL_DIRECTORY, 'main.js'), {
       CREATED_DATE: moment().format('L'),
       NAME: answers.name.replace(/-/g, '_'),
       DESCRIPTION: answers.description,
       AUTHOR: `${answers.author} <${answers.mail}>`,
-      MAIN: 'main.js',
+      MAIN: 'main.js'
     })
 
-    ////// helloWorld.js //////
+    /// /// helloWorld.js //////
     await render(path.join(LOCAL_DIRECTORY, 'apps', '__app_template', 'controllers', 'helloWorld.js'), {
       CREATED_DATE: moment().format('L'),
       APP: answers.app,
-      AUTHOR: `${answers.author} <${answers.mail}>`,
+      AUTHOR: `${answers.author} <${answers.mail}>`
     })
 
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     // Renomeia Diretório app
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
 
     console.log(`Criando app "${answers.app}"`)
     await fs.move(path.join(LOCAL_DIRECTORY, 'apps', '__app_template'), path.join(LOCAL_DIRECTORY, 'apps', answers.app))
 
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     // Instala Dependencias (Deve ficao no final ou então converter para promessa)
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     const hdle = spawn(INSTALL_DEPENDENCIES_SCRIPT)
     hdle.stdout.on('data', data => console.log(data.toString()))
     hdle.stderr.on('data', data => console.error(data.toString()))
 
     hdle.on('close', code => {
-
       if (code === 0) {
-
         console.log('\n------------------------------------')
         console.log('Projeto criado com sucesso!')
         console.log('\nPara testar, execute o script: \n\t"sindri install-assets"')
@@ -189,21 +194,12 @@ program
         console.log('\nPara atualizar o package.json (como adicionar repositório git):\n\t "npm init"')
         console.log('\nPara gerar binário:\n\t "npm run build"')
         console.log('------------------------------------\n\n')
-
       } else {
-
         console.log(`child process exited with code ${code}`)
-
       }
-
     })
-
   } catch (e) {
-
     console.error(e.stack)
     process.exit()
-
   }
-
 })()
-

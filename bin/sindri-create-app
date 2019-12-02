@@ -13,7 +13,7 @@ const path = require('path')
 const inquirer = require('inquirer')
 const fs = require('fs-extra')
 const changeCase = require('change-case')
-const {validateProject, render} = require('../library/tool')
+const { validateProject, render } = require('../library/tool')
 
 const moment = require('moment')
 moment.locale('pt-br')
@@ -25,9 +25,7 @@ program
   .parse(process.argv)
 
 ;(async () => {
-
   try {
-
     if (!validateProject(LOCAL_DIRECTORY)) {
       console.error('Invalid project')
       process.exit()
@@ -38,19 +36,19 @@ program
       process.exit()
     }
 
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     // Valida se Projeto é válido
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     if (!await fs.pathExists(path.join(LOCAL_DIRECTORY, 'apps'))) {
       console.error('Project invalid!')
       process.exit(1)
     }
 
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     // Questões
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     // Traduzir
-    let questions = [
+    const questions = [
       {
         name: 'app',
         message: 'Nome do App?',
@@ -65,28 +63,28 @@ program
       }
     ]
 
-    let answers = await inquirer.prompt(questions)
+    const answers = await inquirer.prompt(questions)
 
     const APP_DIRECTORY = path.join(LOCAL_DIRECTORY, 'apps', answers.app)
     const CONTROLLER_FILE_NAME = changeCase.camelCase(answers.controller) + '.js'
 
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     // Valida se diretório existe
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     if (await fs.pathExists(APP_DIRECTORY)) {
       console.error(`Directory '${APP_DIRECTORY}' already exists!`)
       process.exit(1)
     }
 
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     // Copia Template
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     console.log(`Criando app em ${APP_DIRECTORY}`)
     await fs.copy(TEMPLATE_APP_DIRECTORY, APP_DIRECTORY)
 
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     // Renomeia Diretório app
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
 
     console.log(`Criando app "${answers.app}"`)
     await fs.move(
@@ -94,11 +92,11 @@ program
       path.join(APP_DIRECTORY, 'controllers', CONTROLLER_FILE_NAME)
     )
 
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
     // Altera Arquivos
-    ////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////
 
-    ////// CONTROLLER_FILE_NAME //////
+    /// /// CONTROLLER_FILE_NAME //////
     await render(path.join(LOCAL_DIRECTORY, 'apps', answers.app, 'controllers', CONTROLLER_FILE_NAME), {
       CREATED_DATE: moment().format('L'),
       APP: answers.app.replace(/-/g, '_'),
@@ -112,13 +110,8 @@ program
     console.log('\nPara testar, execute o script: \n\t"sindri install-assets"')
     console.log('\nEm seguida:\n\t "node main.js"')
     console.log('------------------------------------\n\n')
-
   } catch (e) {
-
     console.error(e.stack)
     process.exit()
-
   }
-
 })()
-

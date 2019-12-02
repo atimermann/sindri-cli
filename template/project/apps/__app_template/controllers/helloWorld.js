@@ -27,11 +27,15 @@ class HelloWorldController extends Controller {
   /**
    * Middlware Pré
    */
-  pre() {
+  async pre() {
+
+    logger.info('Executando Middleware Pre do Sindri Framework...')
+    await this.sleep(1000)
 
     this.use(async (req, res, next) => {
 
       // Aguarda 1 segundo
+      logger.info('Executando Middleware do Express...')
       await this.sleep(1000)
       logger.info('Middleware executado!')
 
@@ -55,11 +59,9 @@ class HelloWorldController extends Controller {
    */
   pos() {
 
-
     setTimeout(() => {
       logger.info(`Seu novo projeto Sindri está online! Acesse pela url: http://localhost:${config.sindri.server.port}`)
     }, 2000)
-
 
   }
 

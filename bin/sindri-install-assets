@@ -20,11 +20,11 @@ const LOCAL_DIRECTORY = process.cwd()
 const path = require('path')
 const fs = require('fs-extra')
 const program = require('commander')
-const {validateProject} = require('../library/tool')
+const { validateProject } = require('../library/tool')
 
 const ApplicationController = require('sindri-framework/src/library/applicationController')
 
-////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
 
 program
   .version(require('../package').version)
@@ -39,12 +39,10 @@ program
   })
   .parse(process.argv)
 
-////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
 
 ;(async () => {
-
   try {
-
     validateProject(LOCAL_DIRECTORY)
 
     if (!LOCAL_DIRECTORY) {
@@ -52,52 +50,41 @@ program
       process.exit()
     }
 
-    ////////////////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////////////////
     // Carrega Aplicação
-    ////////////////////////////////////////////////////////////////////////
-    let Application = require(path.join(LOCAL_DIRECTORY, 'main.js'))
-    let application = Application.getApplicationData()
+    /// /////////////////////////////////////////////////////////////////////
+    const Application = require(path.join(LOCAL_DIRECTORY, 'main.js'))
+    const application = Application.getApplicationData()
 
-    ////////////////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////////////////
     // Limpa diretório public
-    ////////////////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////////////////
 
     console.log('Limpando diretório "public"...')
     await fs.remove(path.join(LOCAL_DIRECTORY, 'public'))
 
-    ////////////////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////////////////
     // Copia ou cria link dos assets
-    ////////////////////////////////////////////////////////////////////////
-    for (let app of await ApplicationController.getApps(application.applications)) {
-
-      let source = path.join(app.path, 'assets')
+    /// /////////////////////////////////////////////////////////////////////
+    for (const app of await ApplicationController.getApps(application.applications)) {
+      const source = path.join(app.path, 'assets')
 
       if (await fs.pathExists(source)) {
-
-        let destiny = path.join(LOCAL_DIRECTORY, 'public', app.applicationName, app.appName)
+        const destiny = path.join(LOCAL_DIRECTORY, 'public', app.applicationName, app.appName)
 
         if (program.link) {
-
           console.log(`Criando link simbólico de "${path.relative(LOCAL_DIRECTORY, source)}" para "${path.relative(LOCAL_DIRECTORY, destiny)}" `)
           await fs.ensureSymlink(source, destiny)
-
         } else {
-
           console.log(`Copiando "${path.relative(LOCAL_DIRECTORY, source)}" para "${path.relative(LOCAL_DIRECTORY, destiny)}" `)
           await fs.copy(source, destiny)
-
         }
       }
-
     }
 
     console.log('\nAssets instalados com sucesso!\n')
-
   } catch (e) {
-
     console.error(e.stack)
     process.exit()
-
   }
-
 })()
