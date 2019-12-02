@@ -12,17 +12,12 @@
  *
  */
 
-// Como acessa funções do framework acaba usando o config. Não queremos emitir alerta se o config não existir (puxa padrão)
-process.env.SUPPRESS_NO_CONFIG_WARNING = true
-process.env.LOGGER_CONSOLE_ENABLED = false
-
-const LOCAL_DIRECTORY = process.cwd()
-const path = require('path')
+const { join, relative } = require('path')
 const fs = require('fs-extra')
 const program = require('commander')
-const { validateProject } = require('../library/tool')
+const { validateProject, findRootPath } = require('../library/tool')
 
-const ApplicationController = require('sindri-framework/src/library/applicationController')
+const ApplicationController = require('sindri-framework/library/applicationController')
 
 /// /////////////////////////////////////////////////////////////////////
 
@@ -43,17 +38,14 @@ program
 
 ;(async () => {
   try {
-    validateProject(LOCAL_DIRECTORY)
-
-    if (!LOCAL_DIRECTORY) {
-      console.error('Invalid LOCAL_DIRECTORY')
-      process.exit()
-    }
+    const rootPath = await findRootPath()
+    const srcPath = join(rootPath, 'src')
+    await validateProject(srcPath)
 
     /// /////////////////////////////////////////////////////////////////////
     // Carrega Aplicação
     /// /////////////////////////////////////////////////////////////////////
-    const Application = require(path.join(LOCAL_DIRECTORY, 'main.js'))
+    const Application = require(join(srcPath, 'main.js'))
     const application = Application.getApplicationData()
 
     /// /////////////////////////////////////////////////////////////////////
@@ -61,22 +53,22 @@ program
     /// /////////////////////////////////////////////////////////////////////
 
     console.log('Limpando diretório "public"...')
-    await fs.remove(path.join(LOCAL_DIRECTORY, 'public'))
+    await fs.remove(join(srcPath, 'public'))
 
     /// /////////////////////////////////////////////////////////////////////
     // Copia ou cria link dos assets
     /// /////////////////////////////////////////////////////////////////////
     for (const app of await ApplicationController.getApps(application.applications)) {
-      const source = path.join(app.path, 'assets')
+      const source = join(app.path, 'assets')
 
       if (await fs.pathExists(source)) {
-        const destiny = path.join(LOCAL_DIRECTORY, 'public', app.applicationName, app.appName)
+        const destiny = join(srcPath, 'public', app.applicationName, app.appName)
 
         if (program.link) {
-          console.log(`Criando link simbólico de "${path.relative(LOCAL_DIRECTORY, source)}" para "${path.relative(LOCAL_DIRECTORY, destiny)}" `)
+          console.log(`Criando link simbólico de "${relative(rootPath, source)}" para "${relative(rootPath, destiny)}" `)
           await fs.ensureSymlink(source, destiny)
         } else {
-          console.log(`Copiando "${path.relative(LOCAL_DIRECTORY, source)}" para "${path.relative(LOCAL_DIRECTORY, destiny)}" `)
+          console.log(`Copiando "${relative(rootPath, source)}" para "${relative(rootPath, destiny)}" `)
           await fs.copy(source, destiny)
         }
       }
