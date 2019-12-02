@@ -19,3 +19,4 @@ npm i --save --loglevel warn pkg@4.4.0
 # npm i --save --loglevel warn config
 
 npm i --save-dev --loglevel warn nodemon
+npm i --save-dev eslint eslint-config-standard eslint-plugin-standard eslint-plugin-promise eslint-plugin-import eslint-plugin-node babel-eslint

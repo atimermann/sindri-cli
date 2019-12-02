@@ -9,37 +9,31 @@
 'use strict'
 
 const program = require('commander')
-const path = require('path')
+const { join, basename } = require('path')
 const inquirer = require('inquirer')
 const fs = require('fs-extra')
 const changeCase = require('change-case')
-const { validateProject, render } = require('../library/tool')
+const { findRootPath, validateProject, render } = require('../library/tool')
 
 const moment = require('moment')
 moment.locale('pt-br')
 
-const LOCAL_DIRECTORY = process.cwd()
-const TEMPLATE_APP_DIRECTORY = path.join(__dirname, '../template', 'app')
 program
   .description('Cria um novo app com os arquivos necessários utilizando o Sindri Framework.')
   .parse(process.argv)
 
 ;(async () => {
   try {
-    if (!validateProject(LOCAL_DIRECTORY)) {
-      console.error('Invalid project')
-      process.exit()
-    }
 
-    if (!LOCAL_DIRECTORY) {
-      console.error('Invalid LOCAL_DIRECTORY')
-      process.exit()
-    }
+    const templateAppPath = join(__dirname, '../template', 'app')
+    const rootPath = await findRootPath()
+    const srcPath = join(rootPath, 'src')
+    await validateProject(srcPath)
 
     /// /////////////////////////////////////////////////////////
     // Valida se Projeto é válido
     /// /////////////////////////////////////////////////////////
-    if (!await fs.pathExists(path.join(LOCAL_DIRECTORY, 'apps'))) {
+    if (!await fs.pathExists(join(srcPath, 'apps'))) {
       console.error('Project invalid!')
       process.exit(1)
     }
@@ -52,7 +46,7 @@ program
       {
         name: 'app',
         message: 'Nome do App?',
-        default: path.basename(LOCAL_DIRECTORY),
+        default: basename(rootPath),
         validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9 -)'
       },
       {
@@ -65,22 +59,22 @@ program
 
     const answers = await inquirer.prompt(questions)
 
-    const APP_DIRECTORY = path.join(LOCAL_DIRECTORY, 'apps', answers.app)
-    const CONTROLLER_FILE_NAME = changeCase.camelCase(answers.controller) + '.js'
+    const appPath = join(srcPath, 'apps', answers.app)
+    const controllerFileName = changeCase.camelCase(answers.controller) + '.js'
 
     /// /////////////////////////////////////////////////////////
     // Valida se diretório existe
     /// /////////////////////////////////////////////////////////
-    if (await fs.pathExists(APP_DIRECTORY)) {
-      console.error(`Directory '${APP_DIRECTORY}' already exists!`)
+    if (await fs.pathExists(appPath)) {
+      console.error(`Directory '${appPath}' already exists!`)
       process.exit(1)
     }
 
     /// /////////////////////////////////////////////////////////
     // Copia Template
     /// /////////////////////////////////////////////////////////
-    console.log(`Criando app em ${APP_DIRECTORY}`)
-    await fs.copy(TEMPLATE_APP_DIRECTORY, APP_DIRECTORY)
+    console.log(`Criando app em ${appPath}`)
+    await fs.copy(templateAppPath, appPath)
 
     /// /////////////////////////////////////////////////////////
     // Renomeia Diretório app
@@ -88,27 +82,27 @@ program
 
     console.log(`Criando app "${answers.app}"`)
     await fs.move(
-      path.join(APP_DIRECTORY, 'controllers', '__controller_template.js'),
-      path.join(APP_DIRECTORY, 'controllers', CONTROLLER_FILE_NAME)
+      join(appPath, 'controllers', '__controller_template.js'),
+      join(appPath, 'controllers', controllerFileName)
     )
 
     /// /////////////////////////////////////////////////////////
     // Altera Arquivos
     /// /////////////////////////////////////////////////////////
 
-    /// /// CONTROLLER_FILE_NAME //////
-    await render(path.join(LOCAL_DIRECTORY, 'apps', answers.app, 'controllers', CONTROLLER_FILE_NAME), {
+    /// /// controllerFileName //////
+    await render(join(srcPath, 'apps', answers.app, 'controllers', controllerFileName), {
       CREATED_DATE: moment().format('L'),
       APP: answers.app.replace(/-/g, '_'),
-      AUTHOR: require(path.join(LOCAL_DIRECTORY, 'package.json')).author,
-      CONTROLLER_FILE_NAME,
+      AUTHOR: require(join(rootPath, 'package.json')).author,
+      CONTROLLER_FILE_NAME: controllerFileName,
       CONTROLLER_NAME: changeCase.pascalCase(answers.controller)
     })
 
     console.log('\n------------------------------------')
     console.log('App criado com sucesso!')
     console.log('\nPara testar, execute o script: \n\t"sindri install-assets"')
-    console.log('\nEm seguida:\n\t "node main.js"')
+    console.log('\nEm seguida:\n\t "npm run dev"')
     console.log('------------------------------------\n\n')
   } catch (e) {
     console.error(e.stack)

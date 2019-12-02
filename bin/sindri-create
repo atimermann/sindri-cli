@@ -16,7 +16,7 @@
 const program = require('commander')
 const emptyDir = require('empty-dir')
 const fs = require('fs-extra')
-const path = require('path')
+const { join, basename } = require('path')
 const inquirer = require('inquirer')
 const { spawn } = require('child_process')
 const semver = require('semver')
@@ -24,10 +24,7 @@ const moment = require('moment')
 moment.locale('pt-br')
 const { render } = require('../library/tool')
 
-const TEMPLATE_DIRECTORY = path.join(__dirname, '../template/project')
-const LOCAL_DIRECTORY = process.cwd()
-
-const INSTALL_DEPENDENCIES_SCRIPT = path.join(__dirname, '../scripts/install_dependencies.sh')
+const INSTALL_DEPENDENCIES_SCRIPT = join(__dirname, '../scripts/install_dependencies.sh')
 
 // Atualizar sempre que mudar a versão do node no PKG
 const NPM_BUILD_COMMAND = 'npx pkg -t node12-linux-x64 --out-path build . && (cd build && mkdir -p config) && cp config/default.yaml build/config'
@@ -38,8 +35,15 @@ program
 
 ;(async () => {
   try {
-    if (!LOCAL_DIRECTORY) {
-      console.error('Invalid LOCAL_DIRECTORY')
+    const templatePath = join(__dirname, '../template/project')
+
+    const rootPath = process.cwd()
+
+    // Diretório src para copia dos arquivos
+    const srcPath = join(rootPath, 'src')
+
+    if (!rootPath) {
+      console.error('Invalid rootPath')
       process.exit()
     }
 
@@ -48,7 +52,7 @@ program
       {
         name: 'name',
         message: 'Nome do projeto?',
-        default: path.basename(LOCAL_DIRECTORY),
+        default: basename(rootPath),
         validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
       },
       {
@@ -75,7 +79,7 @@ program
       {
         name: 'app',
         message: 'Você precisa criar pelo menos um app para este projeto, selecione um nome:',
-        default: path.basename(LOCAL_DIRECTORY),
+        default: basename(rootPath),
         validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
       }
       // {
@@ -93,8 +97,6 @@ program
       console.log(`  ${key}:  ${value}`)
     }
 
-    // TODO: ==em teste== REMOVIDO, DEVE SER USADO LOCALMENTE console.log('\n ATENÇÃO: Pacote "npx" será intalado globalmente! Pressione ctrl+c para cancelar')
-
     if (!(await inquirer.prompt({
       name: 'confirm',
       type: 'confirm',
@@ -107,7 +109,7 @@ program
     /// /////////////////////////////////////////////////////////
     // Valida se diretório está vazio
     /// /////////////////////////////////////////////////////////
-    if (!emptyDir.sync(LOCAL_DIRECTORY)) {
+    if (!emptyDir.sync(rootPath)) {
       console.warn('WARNING: Directory is not empty.')
       if (!(await inquirer.prompt({
         name: 'confirm',
@@ -138,25 +140,25 @@ program
     /// /////////////////////////////////////////////////////////
     // Copia Template
     /// /////////////////////////////////////////////////////////
-    console.log(`Criando projeto em ${LOCAL_DIRECTORY}`)
-    await fs.copy(TEMPLATE_DIRECTORY, LOCAL_DIRECTORY)
+    console.log(`Criando projeto em ${rootPath}`)
+    await fs.copy(templatePath, rootPath)
 
     /// /////////////////////////////////////////////////////////
     // Altera Arquivos
     /// /////////////////////////////////////////////////////////
 
     /// /// package.json //////
-    await render(path.join(LOCAL_DIRECTORY, 'package.json'), {
+    await render(join(rootPath, 'package.json'), {
       PACKAGE_NAME: answers.name,
       PACKAGE_DESCRIPTION: answers.description,
       PACKAGE_AUTHOR: `${answers.author} <${answers.mail}>`,
       PACKAGE_VERSION: answers.version,
-      PACKAGE_MAIN: 'main.js',
+      PACKAGE_MAIN: 'src/main.js',
       PACKAGE_BUILD: NPM_BUILD_COMMAND
     })
 
     /// /// main.js //////
-    await render(path.join(LOCAL_DIRECTORY, 'main.js'), {
+    await render(join(srcPath, 'main.js'), {
       CREATED_DATE: moment().format('L'),
       NAME: answers.name.replace(/-/g, '_'),
       DESCRIPTION: answers.description,
@@ -165,7 +167,7 @@ program
     })
 
     /// /// helloWorld.js //////
-    await render(path.join(LOCAL_DIRECTORY, 'apps', '__app_template', 'controllers', 'helloWorld.js'), {
+    await render(join(srcPath, 'apps', '__app_template', 'controllers', 'helloWorld.js'), {
       CREATED_DATE: moment().format('L'),
       APP: answers.app,
       AUTHOR: `${answers.author} <${answers.mail}>`
@@ -176,7 +178,10 @@ program
     /// /////////////////////////////////////////////////////////
 
     console.log(`Criando app "${answers.app}"`)
-    await fs.move(path.join(LOCAL_DIRECTORY, 'apps', '__app_template'), path.join(LOCAL_DIRECTORY, 'apps', answers.app))
+    await fs.move(
+      join(srcPath, 'apps', '__app_template'),
+      join(srcPath, 'apps', answers.app)
+    )
 
     /// /////////////////////////////////////////////////////////
     // Instala Dependencias (Deve ficao no final ou então converter para promessa)
@@ -199,6 +204,7 @@ program
       }
     })
   } catch (e) {
+    console.error(e.message)
     console.error(e.stack)
     process.exit()
   }
