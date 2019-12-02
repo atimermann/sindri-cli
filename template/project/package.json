@@ -12,11 +12,13 @@
   "author": "{{PACKAGE_AUTHOR}}",
   "license": "ISC",
   "pkg": {
-    "scripts": "apps/**/controllers/*.js",
+    "scripts": "src/apps/**/controllers/*.js",
     "assets": [
-      "apps/**/views/*",
-      "public",
-      "node_modules/config"
+      "src/apps/**/views/*",
+      "src/public",
+      "node_modules/config",
+      "node_modules/figlet"
     ]
   }
 }
+sinddsd
