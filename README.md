@@ -66,7 +66,10 @@ Compilação:
 
 ## Melhorias
 
+[OK] Atualizar eslint
 - Migrar para @agtm
+- Migrar para mjs
+- Criar projeto @agtm/utils com funcões comuns (wait)
 - Atualizar bibliotecas
 - Usar script direto no package.json
 - Imprimir informações de variaveis no terminal

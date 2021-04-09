@@ -1,0 +1,213 @@
+#!/usr/bin/env node
+/**
+ * **Created on 06/12/18**
+ *
+ * bin/sindri-create.js
+ *
+ * @author André Timermann <andre.timermann@smarti.io>
+ *
+ *  Cria novo projeto Sindri Framework basado em um template
+ *  Importante Manter atualizado sempre que realizar alteração no sindri framework
+ *  Manter controle sobre a versão compatível com Sindri Framework, validando.
+ *
+ */
+'use strict'
+
+import program from 'commander'
+import fs from 'fs-extra'
+import { basename, join } from 'path'
+import inquirer from 'inquirer'
+import { spawn } from 'child_process'
+import moment from 'moment'
+import { render } from './library/tool.mjs'
+import { __dirname } from './library/util.js'
+
+moment.locale('pt-br')
+
+const DIRNAME = __dirname(import.meta.url)
+
+const INSTALL_DEPENDENCIES_SCRIPT = join(DIRNAME, '../scripts/install_dependencies.sh')
+
+// Atualizar sempre que mudar a versão do node no PKG
+const NPM_BUILD_COMMAND = 'npx pkg -t node12-linux-x64 --out-path build . && (cd build && mkdir -p config) && cp config/default.yaml build/config'
+
+program
+  .description('Cria um novo projeto com os arquivos necessários utilizando o Sindri Framework.')
+  .parse(process.argv)
+
+;(async () => {
+  try {
+    const templatePath = join(DIRNAME, '../template/project')
+
+    const rootPath = process.cwd()
+
+    // Diretório src para copia dos arquivos
+    const srcPath = join(rootPath, 'src')
+
+    if (!rootPath) {
+      console.error('Invalid rootPath')
+      process.exit()
+    }
+
+    // Traduzir
+    const questions = [
+      {
+        name: 'name',
+        message: 'Nome do projeto?',
+        default: basename(rootPath),
+        validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
+      },
+      {
+        name: 'description',
+        message: 'Descrição do projeto:',
+        validate: input => input !== ''
+      },
+      {
+        name: 'version',
+        message: 'Versão',
+        default: '0.0.1',
+        validate: input => (semver.valid(input) === null) ? 'Versão inválida' : true
+      },
+      {
+        name: 'author',
+        message: 'Seu nome:',
+        validate: input => input !== ''
+      },
+      {
+        name: 'mail',
+        message: 'Informe um e-mail válido',
+        validate: input => input.match(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/) ? true : 'Informe um e-mail válido'
+      },
+      {
+        name: 'app',
+        message: 'Você precisa criar pelo menos um app para este projeto, selecione um nome:',
+        default: basename(rootPath),
+        validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
+      }
+      // {
+      //   type: 'checkbox',
+      //   name: 'apps',
+      //   message: 'Selecions os apps que deseja carregar (deve estar instalado via "npm i"):',
+      //   choices: ['sindri-admin']
+      // },
+    ]
+
+    const answers = await inquirer.prompt(questions)
+
+    console.log('Verifique as respostas inseridas:\n')
+    for (const [key, value] of Object.entries(answers)) {
+      console.log(`  ${key}:  ${value}`)
+    }
+
+    if (!(await inquirer.prompt({
+      name: 'confirm',
+      type: 'confirm',
+      default: true,
+      message: 'Continuar?'
+    })).confirm) {
+      process.exit()
+    }
+
+    /// /////////////////////////////////////////////////////////
+    // Valida se diretório está vazio
+    /// /////////////////////////////////////////////////////////
+    if (!emptyDir.sync(rootPath)) {
+      console.warn('WARNING: Directory is not empty.')
+      if (!(await inquirer.prompt({
+        name: 'confirm',
+        type: 'confirm',
+        default: false,
+        message: 'Continuar?'
+      })).confirm) {
+        process.exit(1)
+      }
+    }
+
+    /// /////////////////////////////////////////////////////////
+    // Valida NODEJS Version
+    // Sempre atualizar com a ultima versão do node disponível no PKG e configurado no sindri-framework
+    /// /////////////////////////////////////////////////////////
+    console.log(`NodeJs Version: ${process.version}`)
+
+    if (semver.lt(process.version, '12.0.0')) {
+      console.error('Required version of nodejs greater than 12.0.0')
+      process.exit(2)
+    }
+
+    // Verifique ultima versão disponível em ~/.pkg-cache. Teste novas versões
+    if (semver.gtr(process.version, '12.2.0')) {
+      console.warn('WARN: If you wanted to compile a project using "node-pkg", remember that it will be compiled with the latest version available for "node-pkg", which is currently 12.2.0 LTS')
+    }
+
+    /// /////////////////////////////////////////////////////////
+    // Copia Template
+    /// /////////////////////////////////////////////////////////
+    console.log(`Criando projeto em ${rootPath}`)
+    await fs.copy(templatePath, rootPath)
+
+    /// /////////////////////////////////////////////////////////
+    // Altera Arquivos
+    /// /////////////////////////////////////////////////////////
+
+    /// /// package.json //////
+    await render(join(rootPath, 'package.json'), {
+      PACKAGE_NAME: answers.name,
+      PACKAGE_DESCRIPTION: answers.description,
+      PACKAGE_AUTHOR: `${answers.author} <${answers.mail}>`,
+      PACKAGE_VERSION: answers.version,
+      PACKAGE_MAIN: 'src/main.js',
+      PACKAGE_BUILD: NPM_BUILD_COMMAND
+    })
+
+    /// /// main.js //////
+    await render(join(srcPath, 'main.js'), {
+      CREATED_DATE: moment().format('L'),
+      NAME: answers.name.replace(/-/g, '_'),
+      DESCRIPTION: answers.description,
+      AUTHOR: `${answers.author} <${answers.mail}>`,
+      MAIN: 'main.js'
+    })
+
+    /// /// helloWorld.js //////
+    await render(join(srcPath, 'apps', '__app_template', 'controllers', 'helloWorld.js'), {
+      CREATED_DATE: moment().format('L'),
+      APP: answers.app,
+      AUTHOR: `${answers.author} <${answers.mail}>`
+    })
+
+    /// /////////////////////////////////////////////////////////
+    // Renomeia Diretório app
+    /// /////////////////////////////////////////////////////////
+
+    console.log(`Criando app "${answers.app}"`)
+    await fs.move(
+      join(srcPath, 'apps', '__app_template'),
+      join(srcPath, 'apps', answers.app)
+    )
+
+    /// /////////////////////////////////////////////////////////
+    // Instala Dependencias (Deve ficao no final ou então converter para promessa)
+    /// /////////////////////////////////////////////////////////
+    const hdle = spawn(INSTALL_DEPENDENCIES_SCRIPT)
+    hdle.stdout.on('data', data => console.log(data.toString()))
+    hdle.stderr.on('data', data => console.error(data.toString()))
+
+    hdle.on('close', code => {
+      if (code === 0) {
+        console.log('\n------------------------------------')
+        console.log('Projeto criado com sucesso!')
+        console.log('\nPara testar, execute o script: \n\t"sindri install-assets"')
+        console.log('\nEm seguida:\n\t "npm run dev"')
+        console.log('\nPara atualizar o package.json (como adicionar repositório git):\n\t "npm init"')
+        console.log('\nPara gerar binário:\n\t "npm run build"')
+        console.log('------------------------------------\n\n')
+      } else {
+        console.log(`child process exited with code ${code}`)
+      }
+    })
+  } catch (e) {
+    console.error(e.message)
+    console.error(e.stack)
+    process.exit()
+  }
+})()

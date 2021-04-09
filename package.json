@@ -1,8 +1,9 @@
 {
-  "name": "sindri-cli",
+  "name": "@agtm/sindri-cli",
   "version": "2.2.4",
   "description": "Conjuntos de scripts para auxiliar no desenvolvimento de projetos criados com Sindri Framework.",
   "main": "index.js",
+  "type": "module",
   "bin": {
     "sindri": "bin/sindri",
     "sindri-build": "bin/sindri-build",
@@ -11,7 +12,9 @@
     "sindri-create-controller": "bin/sindri-create-controller"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint .",
+    "fixlint": "npx eslint --fix ."
   },
   "files": [
     "bin",
@@ -28,7 +31,6 @@
     "change-case": "^3.1.0",
     "commander": "^2.20.3",
     "empty-dir": "^1.0.0",
-    "eslint": "^6.7.2",
     "find-package-json": "^1.2.0",
     "fs-extra": "^8.1.0",
     "inquirer": "latest",
@@ -39,10 +41,11 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-node": "^10.0.0",
-    "eslint-plugin-promise": "^4.2.1",
+    "eslint": "^7.23.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
     "eslint-plugin-standard": "^4.0.1"
   }
 }
