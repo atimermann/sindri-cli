@@ -23,7 +23,7 @@ class {{CONTROLLER_NAME}}Controller extends Controller {
    * Configuração de Rotas
    */
   routes () {
-    this.get('/', async (request, response) => {
+    this.get('/{{CONTROLLER_NAME}}', async (request, response) => {
       response
         .status(200)
         .send('OK')
