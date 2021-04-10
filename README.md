@@ -2,6 +2,14 @@
 
 Conjuntos de scripts para auxiliar no desenvolvimento de projetos criados com Sindri Framework.
 
+O principal script é o sindri-create, para criar novo projeto sindri framework, podemos criar um novo projeto sem a 
+necessidade de instalar o sindri-cri da seguinte forma:
+
+```shell
+    npx 
+```
+
+
 ## Instalação
 
 SindriCli deve ser instalado globalmente, para ter acesso aos comandos:
