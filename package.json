@@ -5,11 +5,10 @@
   "main": "index.js",
   "type": "module",
   "bin": {
-    "sindri": "bin/sindri",
-    "sindri-build": "bin/sindri-build",
-    "sindri-create": "bin/sindri-create",
-    "sindri-install-assets": "bin/sindri-install-assets",
-    "sindri-create-controller": "bin/sindri-create-controller"
+    "sindri": "src/sindri.mjs",
+    "sindri-create": "src/create.mjs",
+    "sindri-install-assets": "src/install-assets.mjs",
+    "sindri-build": "src/build.mjs"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

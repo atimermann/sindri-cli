@@ -11,8 +11,6 @@
 process.env.SUPPRESS_NO_CONFIG_WARNING = true
 process.env.LOGGER_CONSOLE_ENABLED = false
 
-import SubClassOf from 'subclassof'
-import Application from 'sindri-framework/application.js'
 import { dirname, join } from 'path'
 import fs from 'fs-extra'
 import packageJsonFinder from 'find-package-json'
@@ -46,9 +44,9 @@ export async function validateProject (srcPath) {
   // Valida se src/main.js existe
   if (!await fs.pathExists(mainFilePath)) throw new Error('Invalid project: main.js file does not exist')
 
-  const project = require(mainFilePath)
+  const project = (await import(mainFilePath)).default
 
-  if (SubClassOf(project.constructor, Application, true)) {
+  if (project.constructor._sindriApplicationClass) {
     if (project.name !== undefined &&
       project.path !== undefined &&
       project.applications !== undefined &&

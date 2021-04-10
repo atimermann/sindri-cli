@@ -12,11 +12,10 @@
  *
  */
 
-const rootPath = process.cwd()
-const program = require('commander')
-const { spawn } = require('child_process')
-const { join } = require('path')
-const { findRootPath, validateProject } = require('../library/tool')
+import program from 'commander'
+import { spawn } from 'child_process'
+import { join } from 'path'
+import { findRootPath, validateProject } from './library/tool.mjs'
 
 /// /////////////////////////////////////////////////////////////////////
 

@@ -11,7 +11,6 @@
  *  Manter controle sobre a versão compatível com Sindri Framework, validando.
  *
  */
-'use strict'
 
 import program from 'commander'
 import fs from 'fs-extra'
@@ -21,6 +20,8 @@ import { spawn } from 'child_process'
 import moment from 'moment'
 import { render } from './library/tool.mjs'
 import { __dirname } from './library/util.js'
+import semver from 'semver'
+import emptyDir from 'empty-dir'
 
 moment.locale('pt-br')
 
@@ -37,7 +38,7 @@ program
 
 ;(async () => {
   try {
-    const templatePath = join(DIRNAME, '../template/project')
+    const templatePath = join(DIRNAME, './template/project')
 
     const rootPath = process.cwd()
 
@@ -47,6 +48,21 @@ program
     if (!rootPath) {
       console.error('Invalid rootPath')
       process.exit()
+    }
+
+    /// /////////////////////////////////////////////////////////
+    // Valida se diretório está vazio
+    /// /////////////////////////////////////////////////////////
+    if (!emptyDir.sync(rootPath)) {
+      console.warn('ATENÇÃO: Diretório não está vazio')
+      if (!(await inquirer.prompt({
+        name: 'confirm',
+        type: 'confirm',
+        default: false,
+        message: 'Continuar?'
+      })).confirm) {
+        process.exit(1)
+      }
     }
 
     // Traduzir
@@ -106,21 +122,6 @@ program
       message: 'Continuar?'
     })).confirm) {
       process.exit()
-    }
-
-    /// /////////////////////////////////////////////////////////
-    // Valida se diretório está vazio
-    /// /////////////////////////////////////////////////////////
-    if (!emptyDir.sync(rootPath)) {
-      console.warn('WARNING: Directory is not empty.')
-      if (!(await inquirer.prompt({
-        name: 'confirm',
-        type: 'confirm',
-        default: false,
-        message: 'Continuar?'
-      })).confirm) {
-        process.exit(1)
-      }
     }
 
     /// /////////////////////////////////////////////////////////
@@ -196,9 +197,10 @@ program
       if (code === 0) {
         console.log('\n------------------------------------')
         console.log('Projeto criado com sucesso!')
+        console.log('\nAgora execute: \n\t"npm install"')
         console.log('\nPara testar, execute o script: \n\t"sindri install-assets"')
         console.log('\nEm seguida:\n\t "npm run dev"')
-        console.log('\nPara atualizar o package.json (como adicionar repositório git):\n\t "npm init"')
+        console.log('\nPara inicializar um repositório git execute: \n\tgit init e depois npm init')
         console.log('\nPara gerar binário:\n\t "npm run build"')
         console.log('------------------------------------\n\n')
       } else {

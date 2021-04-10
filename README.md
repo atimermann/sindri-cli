@@ -57,19 +57,28 @@ Compilação:
    npm run build
 ```
 
+## Entendendo e configurando projeto para funcionar com PKG (Guiá rápido)
+
+
 ## Versões Testadas
 
 * Sindri Cli@2.0.1 => Sindri Framework@2.0
 * Sindri Cli@2.1.0 => Sindri Framework@2.1 => pkg@4.4.0
 * Sindri Cli@2.2 => Sindri Framework@2.1.12 => pkg@4.4.0    
+* pkg@4.5.1 (Node 14.4.0)
 
 
 ## Melhorias
 
 [OK] Atualizar eslint
-- Migrar para @agtm
+[OK] - Migrar para @agtm
 - Migrar para mjs
 - Criar projeto @agtm/utils com funcões comuns (wait)
 - Atualizar bibliotecas
 - Usar script direto no package.json
 - Imprimir informações de variaveis no terminal
+
+- Configurar scripts em run
+- adicionar suporte ndb nativo
+- configurar compilação para funcionar a partir da pasta build sozinho
+- Atualizar para usar npx em vez de instalar globalmente

@@ -9,14 +9,14 @@ echo "Instalando dependencias..."
 #    git init
 #fi
 
-if ! [[ -x "$(command -v npx)" ]]; then
-    npm i -g --loglevel warn npx
-fi
+#if ! [[ -x "$(command -v npx)" ]]; then
+#    npm i -g --loglevel warn npx
+#fi
 
-npm i --save --loglevel warn sindri-framework@2.1
-npm i --save --loglevel warn pkg@4.4.0
-# Foi incorporado ao projeto  TODO: remover depois de testado
-# npm i --save --loglevel warn config
-
-npm i --save-dev --loglevel warn nodemon
-npm i --save-dev eslint eslint-config-standard eslint-plugin-standard eslint-plugin-promise eslint-plugin-import eslint-plugin-node babel-eslint
+#npm i --save --loglevel warn sindri-framework@2.1
+#npm i --save --loglevel warn pkg@4.5.1
+## Foi incorporado ao projeto  TODO: remover depois de testado
+## npm i --save --loglevel warn config
+#
+#npm i --save-dev --loglevel warn nodemon
+#npm i --save-dev eslint eslint-config-standard eslint-plugin-standard eslint-plugin-promise eslint-plugin-import eslint-plugin-node babel-eslint

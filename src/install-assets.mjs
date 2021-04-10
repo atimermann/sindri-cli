@@ -12,17 +12,20 @@
  *
  */
 
-const { join, relative } = require('path')
-const fs = require('fs-extra')
-const program = require('commander')
-const { validateProject, findRootPath } = require('../library/tool')
+import { join, relative } from 'path'
+import fs from 'fs-extra'
+import program from 'commander'
+import { findRootPath, validateProject } from './library/tool.mjs'
 
-const ApplicationController = require('sindri-framework/library/applicationController')
+import ApplicationController from 'sindri-framework/library/applicationController.js'
+import { __dirname, loadJson } from './library/util.js'
 
 /// /////////////////////////////////////////////////////////////////////
 
+const packageJson = await loadJson(join(__dirname(import.meta.url), '..', 'package.json'))
+
 program
-  .version(require('../package').version)
+  .version(packageJson.version)
   .description('Copia arquivos estáticos das aplicações para pasta public.')
   .option('--link', 'Ao contrário de copiar os arquivos estático das aplicações, cria um link simbólico. Útil na fase de desenvolvimento, arquivos são atualizados automaticamente.')
   .on('--help', function () {
@@ -45,7 +48,7 @@ program
     /// /////////////////////////////////////////////////////////////////////
     // Carrega Aplicação
     /// /////////////////////////////////////////////////////////////////////
-    const Application = require(join(srcPath, 'main.js'))
+    const Application = (await import(join(srcPath, 'main.js'))).default
     const application = Application.getApplicationData()
 
     /// /////////////////////////////////////////////////////////////////////
