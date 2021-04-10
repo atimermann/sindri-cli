@@ -19,10 +19,8 @@
     "fixlint": "npx eslint --fix ."
   },
   "files": [
-    "bin",
-    "library",
     "scripts",
-    "template"
+    "src"
   ],
   "keywords": [
     "cli"
