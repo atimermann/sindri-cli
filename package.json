@@ -11,6 +11,9 @@
     "sindri-build": "src/build.mjs"
   },
   "scripts": {
+    "publish-patch": "npm version patch && npm publish --access public",
+    "publish-minor": "npm version minor && npm publish --access public",
+    "publish-major": "npm version major && npm publish --access public",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "npx eslint .",
     "fixlint": "npx eslint --fix ."
