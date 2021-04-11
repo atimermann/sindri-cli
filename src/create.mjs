@@ -189,7 +189,7 @@ import emptyDir from 'empty-dir'
     console.log('\n------------------------------------')
     console.log('Projeto criado com sucesso!')
     console.log('\nDigite comando abaixo para configurar o projeto: \n\tnpm run config')
-    console.log('\nPara testar, execute o script: \n\tsindri install-assets')
+    console.log('\nPara testar, execute o script: \n\tnpm run install-assets')
     console.log('\nEm seguida:\n\tnpm run dev')
     console.log('\nPara gerar binário:\n\tnpm run build')
     console.log('------------------------------------\n\n')
