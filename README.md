@@ -66,6 +66,8 @@ Compilação:
 
 ## Entendendo e configurando projeto para funcionar com PKG (Guiá rápido)
 
+Alguns arquivos e modulos precisam ser inserido manualmente em assets no package.json, verifique documentação em:
+https://github.com/vercel/pkg
 
 ## Versões Testadas
 
