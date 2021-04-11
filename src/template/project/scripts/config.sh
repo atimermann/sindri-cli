@@ -29,10 +29,10 @@ read -p "Instalar dependencias?(Y/n)? " answer
 case ${answer:0:1} in
 y | Y | '')
 
-  npm i --save @agtm/sindri-cli
   npm i --save @agtm/sindri-framework
   npm i --save config
 
+  npm i --save-dev @agtm/sindri-cli
   npm i --save-dev pkg
   npm i --save-dev nodemon
 
