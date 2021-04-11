@@ -6,17 +6,19 @@
  * @author André Timermann <andre.timermann@smarti.io>
  *
  */
-'use strict'
+import program from 'commander'
+import { basename, join } from 'path'
+import inquirer from 'inquirer'
+import fs from 'fs-extra'
+import changeCase from 'change-case'
+import { findRootPath, render, validateProject } from './library/tool.mjs'
+import { __dirname, loadJson } from '@agtm/utils'
 
-const program = require('commander')
-const { join, basename } = require('path')
-const inquirer = require('inquirer')
-const fs = require('fs-extra')
-const changeCase = require('change-case')
-const { findRootPath, validateProject, render } = require('../library/tool')
+import moment from 'moment'
 
-const moment = require('moment')
 moment.locale('pt-br')
+
+const DIRNAME = __dirname(import.meta.url)
 
 program
   .description('Cria um novo app com os arquivos necessários utilizando o Sindri Framework.')
@@ -25,7 +27,7 @@ program
 ;(async () => {
   try {
 
-    const templateAppPath = join(__dirname, '../template', 'app')
+    const templateAppPath = join(DIRNAME, './template', 'app')
     const rootPath = await findRootPath()
     const srcPath = join(rootPath, 'src')
     await validateProject(srcPath)
@@ -89,19 +91,21 @@ program
     /// /////////////////////////////////////////////////////////
     // Altera Arquivos
     /// /////////////////////////////////////////////////////////
+    console.log('Processando arquivos...')
+    const packageJson = await loadJson(join(rootPath, 'package.json'))
 
     /// /// controllerFileName //////
     await render(join(srcPath, 'apps', answers.app, 'controllers', controllerFileName), {
       CREATED_DATE: moment().format('L'),
       APP: answers.app.replace(/-/g, '_'),
-      AUTHOR: require(join(rootPath, 'package.json')).author,
+      AUTHOR: packageJson.author,
       CONTROLLER_FILE_NAME: controllerFileName,
       CONTROLLER_NAME: changeCase.pascalCase(answers.controller)
     })
 
     console.log('\n------------------------------------')
     console.log('App criado com sucesso!')
-    console.log('\nPara testar, execute o script: \n\t"sindri install-assets"')
+    console.log('\nPara testar, execute o script: \n\t"npm run install-assets"')
     console.log('\nEm seguida:\n\t "npm run dev"')
     console.log('------------------------------------\n\n')
   } catch (e) {

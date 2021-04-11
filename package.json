@@ -8,7 +8,8 @@
     "sindri": "src/sindri.mjs",
     "sindri-create": "src/create.mjs",
     "sindri-install-assets": "src/install-assets.mjs",
-    "sindri-build": "src/build.mjs"
+    "sindri-create-app": "src/create-app.mjs",
+    "sindri-create-controller": "src/create-controller.mjs"
   },
   "scripts": {
     "publish-patch": "npm version patch && npm publish --access public",
@@ -29,6 +30,7 @@
   "license": "ISC",
   "dependencies": {
     "@agtm/sindri-framework": "^2.3.0",
+    "@agtm/utils": "^1.0.1",
     "change-case": "^3.1.0",
     "commander": "^2.20.3",
     "empty-dir": "^1.0.0",

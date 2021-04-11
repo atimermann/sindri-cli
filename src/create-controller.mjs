@@ -2,22 +2,22 @@
 /**
  * **Created on 07/12/18**
  *
- *
  * bin/sindri-create-controller
  * @author André Timermann <andre.timermann@smarti.io>
  *
  */
-'use strict'
+import program from 'commander'
+import { join } from 'path'
+import inquirer from 'inquirer'
+import fs from 'fs-extra'
+import changeCase from 'change-case'
+import { render, validateProject, findRootPath } from './library/tool.mjs'
 
-const program = require('commander')
-const { join } = require('path')
-const inquirer = require('inquirer')
-const fs = require('fs-extra')
-const changeCase = require('change-case')
-const { render, validateProject, findRootPath } = require('../library/tool')
-
-const moment = require('moment')
+import moment from 'moment'
+import { __dirname, loadJson } from '@agtm/utils'
 moment.locale('pt-br')
+
+const DIRNAME = __dirname(import.meta.url)
 
 program
   .description('Cria um novo controller.')
@@ -25,7 +25,7 @@ program
 
 ;(async () => {
   try {
-    const templateAppPath = join(__dirname, '../template', 'app')
+    const templateAppPath = join(DIRNAME, './template', 'app')
     const rootPath = await findRootPath()
     const srcPath = join(rootPath, 'src')
     await validateProject(srcPath)
@@ -100,12 +100,14 @@ program
     /// /////////////////////////////////////////////////////////
     // Altera Arquivos
     /// /////////////////////////////////////////////////////////
+    console.log('Processando arquivos...')
+    const packageJson = await loadJson(join(rootPath, 'package.json'))
 
     /// /// controllerFileName //////
     await render(join(srcPath, 'apps', answers.app, 'controllers', controllerFileName), {
       CREATED_DATE: moment().format('L'),
       APP: answers.app.replace(/-/g, '_'),
-      AUTHOR: require(join(rootPath, 'package.json')).author,
+      AUTHOR: packageJson.author,
       CONTROLLER_FILE_NAME: controllerFileName,
       CONTROLLER_NAME: changeCase.pascalCase(answers.controller)
     })

@@ -16,21 +16,20 @@ import program from 'commander'
 import fs from 'fs-extra'
 import { basename, join } from 'path'
 import inquirer from 'inquirer'
-import { spawn } from 'child_process'
 import moment from 'moment'
 import { render } from './library/tool.mjs'
-import { __dirname } from './library/util.js'
+import { __dirname } from '@agtm/utils'
 import semver from 'semver'
 import emptyDir from 'empty-dir'
 
 moment.locale('pt-br')
 
 const DIRNAME = __dirname(import.meta.url)
-
-const INSTALL_DEPENDENCIES_SCRIPT = join(DIRNAME, '../scripts/install_dependencies.sh')
+// const INSTALL_DEPENDENCIES_SCRIPT = join(DIRNAME, '../scripts/install_dependencies.sh')
 
 // Atualizar sempre que mudar a versão do node no PKG
-const NPM_BUILD_COMMAND = 'npx pkg -t node12-linux-x64 --out-path build . && (cd build && mkdir -p config) && cp config/default.yaml build/config'
+// Atualizar versão no pkg no script
+// const NPM_BUILD_COMMAND = 'npx pkg -t node14-linux-x64 --out-path build . && (cd build && mkdir -p config) && cp config/default.yaml build/config'
 
 program
   .description('Cria um novo projeto com os arquivos necessários utilizando o Sindri Framework.')
@@ -156,8 +155,8 @@ program
       PACKAGE_DESCRIPTION: answers.description,
       PACKAGE_AUTHOR: `${answers.author} <${answers.mail}>`,
       PACKAGE_VERSION: answers.version,
-      PACKAGE_MAIN: 'src/main.js',
-      PACKAGE_BUILD: NPM_BUILD_COMMAND
+      PACKAGE_MAIN: 'src/main.js'
+      // PACKAGE_BUILD: NPM_BUILD_COMMAND
     })
 
     /// /// main.js //////
@@ -186,27 +185,14 @@ program
       join(srcPath, 'apps', answers.app)
     )
 
-    /// /////////////////////////////////////////////////////////
-    // Instala Dependencias (Deve ficao no final ou então converter para promessa)
-    /// /////////////////////////////////////////////////////////
-    const hdle = spawn(INSTALL_DEPENDENCIES_SCRIPT)
-    hdle.stdout.on('data', data => console.log(data.toString()))
-    hdle.stderr.on('data', data => console.error(data.toString()))
+    console.log('\n------------------------------------')
+    console.log('Projeto criado com sucesso!')
+    console.log('\nDigite comando abaixo para configurar o projeto: \n\tnpm run config')
+    console.log('\nPara testar, execute o script: \n\tsindri install-assets')
+    console.log('\nEm seguida:\n\t npm run dev')
+    console.log('\nPara gerar binário:\n\t npm run build')
+    console.log('------------------------------------\n\n')
 
-    hdle.on('close', code => {
-      if (code === 0) {
-        console.log('\n------------------------------------')
-        console.log('Projeto criado com sucesso!')
-        console.log('\nAgora execute: \n\t"npm install"')
-        console.log('\nPara testar, execute o script: \n\t"sindri install-assets"')
-        console.log('\nEm seguida:\n\t "npm run dev"')
-        console.log('\nPara inicializar um repositório git execute: \n\tgit init e depois npm init')
-        console.log('\nPara gerar binário:\n\t "npm run build"')
-        console.log('------------------------------------\n\n')
-      } else {
-        console.log(`child process exited with code ${code}`)
-      }
-    })
   } catch (e) {
     console.error(e.message)
     console.error(e.stack)

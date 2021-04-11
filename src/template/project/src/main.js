@@ -9,10 +9,10 @@
  */
 'use strict'
 
-const Application = require('sindri-framework/application')
-const Server = require('sindri-framework/server')
+const Application = require('@agtm/sindri-framework/application')
+const Server = require('@agtm/sindri-framework/server')
 
-let {{NAME}} = new Application(__dirname, '{{NAME}}')
+const {{NAME}} = new Application(__dirname, '{{NAME}}')
 
 if (require.main === module) {
   // Inicializa Servidor

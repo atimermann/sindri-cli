@@ -2,20 +2,19 @@
 
 Conjuntos de scripts para auxiliar no desenvolvimento de projetos criados com Sindri Framework.
 
-O principal script é o sindri-create, para criar novo projeto sindri framework, podemos criar um novo projeto sem a 
+O principal script é o sindri-create, utilizado para criar projeto sindri framework, podemos executar 
 necessidade de instalar o sindri-cri da seguinte forma:
 
 ```shell
-    npx 
+    npx -y -p @agtm/sindri-cli sindri create
 ```
-
 
 ## Instalação
 
-SindriCli deve ser instalado globalmente, para ter acesso aos comandos:
+Caso prefira manter o SindriCli globalmente execute:
 
 ```
-  npm i -g sindri-cli
+  npm i -g @agtm/sindri-cli
 ```
 Para mais informação leia documentação do projeto Sindri Framework 2
 
@@ -75,18 +74,3 @@ Compilação:
 * Sindri Cli@2.2 => Sindri Framework@2.1.12 => pkg@4.4.0    
 * pkg@4.5.1 (Node 14.4.0)
 
-
-## Melhorias
-
-[OK] Atualizar eslint
-[OK] - Migrar para @agtm
-- Migrar para mjs
-- Criar projeto @agtm/utils com funcões comuns (wait)
-- Atualizar bibliotecas
-- Usar script direto no package.json
-- Imprimir informações de variaveis no terminal
-
-- Configurar scripts em run
-- adicionar suporte ndb nativo
-- configurar compilação para funcionar a partir da pasta build sozinho
-- Atualizar para usar npx em vez de instalar globalmente

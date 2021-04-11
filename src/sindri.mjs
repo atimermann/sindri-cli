@@ -3,13 +3,15 @@
  * Inicializa Script do Sindri
  */
 
-import { __dirname, loadJson } from './library/util.js'
+import { __dirname, loadJson } from '@agtm/utils'
 import program from 'commander'
 
 import { join } from 'path'
 
 ;(async () => {
   const sindriCliPackageJson = await loadJson(join(__dirname(import.meta.url), '..', 'package.json'))
+
+  console.log(`\nVersão: ${sindriCliPackageJson.version}\n`)
 
   program
     .version(sindriCliPackageJson.version)

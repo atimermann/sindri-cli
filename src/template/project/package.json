@@ -5,9 +5,16 @@
   "description": "{{PACKAGE_DESCRIPTION}}",
   "main": "{{PACKAGE_MAIN}}",
   "scripts": {
-    "build": "{{PACKAGE_BUILD}}",
+    "config": "./scripts/config.sh",
+    "build": "./scripts/build.sh",
     "dev": "npx nodemon -e js,yaml,html .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "install-assets": "npx sindri install-assets",
+    "create-app": "npx sindri create-app",
+    "create-controller": "npx sindri create-controller",
+    "lint": "npx eslint src",
+    "lint-fix": "npx eslint --fix src",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "debug": "ndb src/main.js"
   },
   "author": "{{PACKAGE_AUTHOR}}",
   "license": "ISC",
@@ -19,12 +26,5 @@
       "node_modules/config",
       "node_modules/figlet"
     ]
-  },
-  "dependencies": {
-    "pkg": "^4.5.1",
-    "sindri-framework": "^2.0.6"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.7"
   }
 }

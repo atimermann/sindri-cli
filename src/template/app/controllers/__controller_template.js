@@ -7,9 +7,9 @@
  */
 'use strict'
 
-const Controller = require('sindri-framework/controller')
-const logger = require('sindri-framework/logger')
-const config = require('sindri-framework/config')
+const Controller = require('@agtm/sindri-framework/controller')
+const logger = require('@agtm/sindri-framework/logger')
+const config = require('@agtm/sindri-framework/config')
 
 class {{CONTROLLER_NAME}}Controller extends Controller {
   /**

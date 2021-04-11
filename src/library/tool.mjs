@@ -7,7 +7,6 @@
  *   Conjunto de funções auxiliares
  *
  */
-'use strict'
 process.env.SUPPRESS_NO_CONFIG_WARNING = true
 process.env.LOGGER_CONSOLE_ENABLED = false
 
