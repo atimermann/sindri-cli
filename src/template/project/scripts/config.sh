@@ -13,7 +13,7 @@ y | Y | '')
 
   if [[ ! -x "$(command -v git)" ]]; then
     echo "Git não instalado"
-  elif [ ]; then
+  else
     git init
   fi
 
