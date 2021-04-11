@@ -11,20 +11,22 @@ import { join } from 'path'
 import inquirer from 'inquirer'
 import fs from 'fs-extra'
 import changeCase from 'change-case'
-import { render, validateProject, findRootPath } from './library/tool.mjs'
+import { findRootPath, render, validateProject } from './library/tool.mjs'
 
 import moment from 'moment'
 import { __dirname, loadJson } from '@agtm/utils'
-moment.locale('pt-br')
 
-const DIRNAME = __dirname(import.meta.url)
-
-program
-  .description('Cria um novo controller.')
-  .parse(process.argv)
-
-;(async () => {
+(async () => {
   try {
+
+    moment.locale('pt-br')
+
+    const DIRNAME = __dirname(import.meta.url)
+
+    program
+      .description('Cria um novo controller.')
+      .parse(process.argv)
+
     const templateAppPath = join(DIRNAME, './template', 'app')
     const rootPath = await findRootPath()
     const srcPath = join(rootPath, 'src')

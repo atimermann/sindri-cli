@@ -17,15 +17,14 @@ import { __dirname, loadJson } from '@agtm/utils'
 import moment from 'moment'
 
 moment.locale('pt-br')
-
 const DIRNAME = __dirname(import.meta.url)
-
-program
-  .description('Cria um novo app com os arquivos necessários utilizando o Sindri Framework.')
-  .parse(process.argv)
 
 ;(async () => {
   try {
+
+    program
+      .description('Cria um novo app com os arquivos necessários utilizando o Sindri Framework.')
+      .parse(process.argv)
 
     const templateAppPath = join(DIRNAME, './template', 'app')
     const rootPath = await findRootPath()

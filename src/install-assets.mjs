@@ -20,27 +20,26 @@ import { findRootPath, validateProject } from './library/tool.mjs'
 import ApplicationController from '@agtm/sindri-framework/library/applicationController.js'
 import { __dirname, loadJson } from '@agtm/utils'
 
-/// /////////////////////////////////////////////////////////////////////
-
-const packageJson = await loadJson(join(__dirname(import.meta.url), '..', 'package.json'))
-
-program
-  .version(packageJson.version)
-  .description('Copia arquivos estáticos das aplicações para pasta public.')
-  .option('--link', 'Ao contrário de copiar os arquivos estático das aplicações, cria um link simbólico. Útil na fase de desenvolvimento, arquivos são atualizados automaticamente.')
-  .on('--help', function () {
-    console.log('  Explicação:')
-    console.log('')
-    console.log('\tCada app terá seu próprio conjunto de arquivos estáticos (ex: css, img, javascript cliente, etc...) esses arquivos na fase de desenvolvimento ficam localizados no diretório public de cada aplicação para melhor organização.')
-    console.log('\tPorém ao executar a aplicação o Sindri carraga arquivos estáticos de um único diretório na raiz do projeto na pasta public. Necessário então, copiar os arquivos publicos de cada applicação para o público global do projeto (public), isto é feito através deste comando.')
-    console.log('\tFacilita também a configuração de um CDN')
-  })
-  .parse(process.argv)
-
-/// /////////////////////////////////////////////////////////////////////
-
-;(async () => {
+(async () => {
   try {
+
+    const packageJson = await loadJson(join(__dirname(import.meta.url), '..', 'package.json'))
+
+    program
+      .version(packageJson.version)
+      .description('Copia arquivos estáticos das aplicações para pasta public.')
+      .option('--link', 'Ao contrário de copiar os arquivos estático das aplicações, cria um link simbólico. Útil na fase de desenvolvimento, arquivos são atualizados automaticamente.')
+      .on('--help', function () {
+        console.log('  Explicação:')
+        console.log('')
+        console.log('\tCada app terá seu próprio conjunto de arquivos estáticos (ex: css, img, javascript cliente, etc...) esses arquivos na fase de desenvolvimento ficam localizados no diretório public de cada aplicação para melhor organização.')
+        console.log('\tPorém ao executar a aplicação o Sindri carraga arquivos estáticos de um único diretório na raiz do projeto na pasta public. Necessário então, copiar os arquivos publicos de cada applicação para o público global do projeto (public), isto é feito através deste comando.')
+        console.log('\tFacilita também a configuração de um CDN')
+      })
+      .parse(process.argv)
+
+/// /////////////////////////////////////////////////////////////////////
+
     const rootPath = await findRootPath()
     const srcPath = join(rootPath, 'src')
     await validateProject(srcPath)

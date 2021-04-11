@@ -22,21 +22,22 @@ import { __dirname } from '@agtm/utils'
 import semver from 'semver'
 import emptyDir from 'empty-dir'
 
-moment.locale('pt-br')
+(async () => {
+  try {
 
-const DIRNAME = __dirname(import.meta.url)
+    moment.locale('pt-br')
+
+    const DIRNAME = __dirname(import.meta.url)
 // const INSTALL_DEPENDENCIES_SCRIPT = join(DIRNAME, '../scripts/install_dependencies.sh')
 
 // Atualizar sempre que mudar a versão do node no PKG
 // Atualizar versão no pkg no script
 // const NPM_BUILD_COMMAND = 'npx pkg -t node14-linux-x64 --out-path build . && (cd build && mkdir -p config) && cp config/default.yaml build/config'
 
-program
-  .description('Cria um novo projeto com os arquivos necessários utilizando o Sindri Framework.')
-  .parse(process.argv)
+    program
+      .description('Cria um novo projeto com os arquivos necessários utilizando o Sindri Framework.')
+      .parse(process.argv)
 
-;(async () => {
-  try {
     const templatePath = join(DIRNAME, './template/project')
 
     const rootPath = process.cwd()
