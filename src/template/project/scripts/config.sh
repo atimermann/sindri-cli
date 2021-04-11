@@ -35,6 +35,7 @@ y | Y | '')
   npm i --save-dev @agtm/sindri-cli
   npm i --save-dev pkg
   npm i --save-dev nodemon
+  npm i --save-dev ndb
 
   ;;
 *)
