@@ -130,14 +130,14 @@ import emptyDir from 'empty-dir'
     /// /////////////////////////////////////////////////////////
     console.log(`NodeJs Version: ${process.version}`)
 
-    if (semver.lt(process.version, '12.0.0')) {
-      console.error('Required version of nodejs greater than 12.0.0')
+    if (semver.lt(process.version, '14.0.0')) {
+      console.error('Required version of nodejs greater than 14.0.0')
       process.exit(2)
     }
 
     // Verifique ultima versão disponível em ~/.pkg-cache. Teste novas versões
-    if (semver.gtr(process.version, '12.2.0')) {
-      console.warn('WARN: If you wanted to compile a project using "node-pkg", remember that it will be compiled with the latest version available for "node-pkg", which is currently 12.2.0 LTS')
+    if (semver.gtr(process.version, '14.4.0')) {
+      console.warn('WARN: If you wanted to compile a project using "node-pkg", remember that it will be compiled with the latest version available for "node-pkg", which is currently 14.4.0 LTS')
     }
 
     /// /////////////////////////////////////////////////////////

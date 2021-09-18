@@ -62,7 +62,7 @@ class HelloWorldController extends Controller {
       // partials e cache são atributos especiais que permitem configurar o template
       const renderedPage = await this.view('helloWorld.html', {
         title: 'Hello World - Sindri Framework',
-        body: 'Hello World - Sindri Framework <p>',
+        body: 'Hello World - Sindri Framework',
         partials: { p: 'partial' },
         cache: false
       })

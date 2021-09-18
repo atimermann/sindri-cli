@@ -31,6 +31,7 @@ y | Y | '')
 
   npm i --save @agtm/sindri-framework
   npm i --save config
+  npm i --save module-alias
 
   npm i --save-dev @agtm/sindri-cli
   npm i --save-dev pkg

@@ -69,10 +69,16 @@ Compilação:
 Alguns arquivos e modulos precisam ser inserido manualmente em assets no package.json, verifique documentação em:
 https://github.com/vercel/pkg
 
+## jsconfig.json
+
+Configuração para o editor, permite que o webstorm reconheça alias por exemplo.
+
+https://code.visualstudio.com/docs/languages/jsconfig
+
 ## Versões Testadas
 
 * Sindri Cli@2.0.1 => Sindri Framework@2.0
 * Sindri Cli@2.1.0 => Sindri Framework@2.1 => pkg@4.4.0
 * Sindri Cli@2.2 => Sindri Framework@2.1.12 => pkg@4.4.0    
-* pkg@4.5.1 (Node 14.4.0)
+* Sindri Cli@2.5 => Sindri Framework@2.3 => pkg@4.5.1 (Node 14.17.6lls)
 

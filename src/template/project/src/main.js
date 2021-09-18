@@ -8,6 +8,7 @@
  *
  */
 'use strict'
+require('module-alias/register')
 
 const Application = require('@agtm/sindri-framework/application')
 const Server = require('@agtm/sindri-framework/server')

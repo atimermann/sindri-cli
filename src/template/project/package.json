@@ -19,11 +19,13 @@
   },
   "author": "{{PACKAGE_AUTHOR}}",
   "license": "ISC",
+  "_moduleAliases": {
+    "~": "src"
+  },
   "pkg": {
     "scripts": "src/apps/**/controllers/*.js",
     "assets": [
-      "src/apps/**/views/*",
-      "src/public",
+      "src",
       "node_modules/config",
       "node_modules/figlet"
     ]
