@@ -10,6 +10,9 @@
  *  Importante Manter atualizado sempre que realizar alteração no sindri framework
  *  Manter controle sobre a versão compatível com Sindri Framework, validando.
  *
+ *  TODO: Melhorar template README.md
+ *
+ *
  */
 
 import program from 'commander'
@@ -145,6 +148,8 @@ import emptyDir from 'empty-dir'
     /// /////////////////////////////////////////////////////////
     console.log(`Criando projeto em ${rootPath}`)
     await fs.copy(templatePath, rootPath)
+    // TODO: NÃO ESTÁ COPIANDO ARQUIVOS ocultos .env e .gitignore)
+    // Utilizar outra lib ex https://www.npmjs.com/package/ncp
 
     /// /////////////////////////////////////////////////////////
     // Altera Arquivos
