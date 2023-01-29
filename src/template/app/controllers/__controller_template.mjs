@@ -13,7 +13,7 @@ export default class {{CONTROLLER_NAME}}Controller extends Controller {
    */
 
   setup () {
-    logger.info(`App "{{APP}}" Controller "{{CONTROLLER_FILE_NAME}}" OK. Port: ${config('server.port')}`)
+    logger.info(`App "{{APP}}" Controller "{{CONTROLLER_FILE_NAME}}" OK. Static route: ${config.get('server.staticRoute')}`)
   }
 
   /**
