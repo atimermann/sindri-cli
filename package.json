@@ -1,6 +1,6 @@
 {
   "name": "@agtm/sindri-cli",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "Conjuntos de scripts para auxiliar no desenvolvimento de projetos criados com Sindri Framework.",
   "type": "module",
   "bin": {
