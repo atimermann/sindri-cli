@@ -54,7 +54,7 @@ const DIRNAME = __dirname(import.meta.url)
         name: 'controller',
         message: 'Nome do controller padrão?',
         default: 'HelloWorld',
-        validate: input => input.match(/^[a-zA-Z0-9]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
+        validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9 -)'
       }
     ]
 

@@ -55,14 +55,14 @@ import { __dirname, loadJson } from '@agtm/utils'
         name: 'controller',
         message: 'Nome do controller padrão?',
         default: 'HelloWorld',
-        validate: input => input.match(/^[a-zA-Z0-9]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9)'
+        validate: input => input.match(/^[a-zA-Z0-9-]+$/) ? true : 'Nome deve contar apenas caracteres simples (a-Z 0-9 -)'
       }
     ]
 
     const answers = await inquirer.prompt(questions)
 
     const appsPath = join(srcPath, 'apps', answers.app)
-    const controllerFileName = changeCase.camelCase(answers.controller) + '.mjs'
+    const controllerFileName = changeCase.paramCase(answers.controller) + '.mjs'
 
     /// /////////////////////////////////////////////////////////
     // Valida se diretório existe
