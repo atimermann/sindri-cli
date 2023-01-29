@@ -3,7 +3,7 @@
  * **Created on 07/12/18**
  *
  * bin/sindri-create-controller
- * @author André Timermann <andre.timermann@smarti.io>
+ * @author André Timermann <andre@timermann.com.br>
  *
  */
 import program from 'commander'

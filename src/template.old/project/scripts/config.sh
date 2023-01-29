@@ -31,13 +31,12 @@ y | Y | '')
 
   npm i --save @agtm/sindri-framework
   npm i --save config
-  npm i --save esm-module-alias
+  npm i --save module-alias
 
   npm i --save-dev @agtm/sindri-cli
   npm i --save-dev pkg
   npm i --save-dev nodemon
   npm i --save-dev ndb
-
 
   ;;
 *)

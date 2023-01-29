@@ -2,9 +2,9 @@
 /**
  * **Created on 06/12/18**
  *
- * bin/sindri-create.js
+ * bin/sindri-create.mjs
  *
- * @author André Timermann <andre.timermann@smarti.io>
+ * @author André Timermann <andre@timermann.com.br>
  *
  * Copia assets dos projetos para pasta public ou CDN
  *
@@ -47,7 +47,7 @@ import { __dirname, loadJson } from '@agtm/utils'
     /// /////////////////////////////////////////////////////////////////////
     // Carrega Aplicação
     /// /////////////////////////////////////////////////////////////////////
-    const Application = (await import(join(srcPath, 'main.js'))).default
+    const Application = (await import(join(srcPath, 'main.mjs'))).default
     const application = Application.getApplicationData()
 
     /// /////////////////////////////////////////////////////////////////////

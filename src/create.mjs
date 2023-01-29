@@ -4,7 +4,7 @@
  *
  * bin/sindri-create.js
  *
- * @author André Timermann <andre.timermann@smarti.io>
+ * @author André Timermann <andre@timermann.com.br>
  *
  *  Cria novo projeto Sindri Framework basado em um template
  *  Importante Manter atualizado sempre que realizar alteração no sindri framework
@@ -161,21 +161,30 @@ import emptyDir from 'empty-dir'
       PACKAGE_DESCRIPTION: answers.description,
       PACKAGE_AUTHOR: `${answers.author} <${answers.mail}>`,
       PACKAGE_VERSION: answers.version,
-      PACKAGE_MAIN: 'src/main.js'
+      PACKAGE_MAIN: 'src/run.mjs'
       // PACKAGE_BUILD: NPM_BUILD_COMMAND
     })
 
-    /// /// main.js //////
-    await render(join(srcPath, 'main.js'), {
+    /// /// main.mjs //////
+    await render(join(srcPath, 'main.mjs'), {
       CREATED_DATE: moment().format('L'),
       NAME: answers.name.replace(/-/g, '_'),
       DESCRIPTION: answers.description,
       AUTHOR: `${answers.author} <${answers.mail}>`,
-      MAIN: 'main.js'
+      MAIN: 'main.mjs'
     })
 
-    /// /// helloWorld.js //////
-    await render(join(srcPath, 'apps', '__app_template', 'controllers', 'helloWorld.js'), {
+    /// /// run.mjs //////
+    await render(join(srcPath, 'run.mjs'), {
+      CREATED_DATE: moment().format('L'),
+      NAME: answers.name.replace(/-/g, '_'),
+      DESCRIPTION: answers.description,
+      AUTHOR: `${answers.author} <${answers.mail}>`,
+      MAIN: 'run.mjs'
+    })
+
+    /// /// helloWorld.mjs //////
+    await render(join(srcPath, 'apps', '__app_template', 'controllers', 'helloWorld.mjs'), {
       CREATED_DATE: moment().format('L'),
       APP: answers.app,
       AUTHOR: `${answers.author} <${answers.mail}>`

@@ -8,7 +8,7 @@
     "config": "./scripts/config.sh",
     "build": "./scripts/build.sh",
     "build-debug": "npx pkg -t node14-linux-x64 --out-path build .",
-    "dev": "npx nodemon --loader=./esm-loader.mjs -e mjs,js,yaml,html .",
+    "dev": "npx nodemon -e js,yaml,html .",
     "install-assets": "npx sindri install-assets",
     "create-app": "npx sindri create-app",
     "create-controller": "npx sindri create-controller",
@@ -23,14 +23,11 @@
     "~": "src"
   },
   "pkg": {
-    "scripts": "src/apps/**/controllers/*.mjs",
+    "scripts": "src/apps/**/controllers/*.js",
     "assets": [
       "src",
       "node_modules/config",
       "node_modules/figlet"
     ]
-  },
-  "engines": {
-    "node": ">=18"
   }
 }
