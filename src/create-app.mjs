@@ -61,7 +61,7 @@ const DIRNAME = __dirname(import.meta.url)
     const answers = await inquirer.prompt(questions)
 
     const appPath = join(srcPath, 'apps', answers.app)
-    const controllerFileName = changeCase.camelCase(answers.controller) + '.mjs'
+    const controllerFileName = changeCase.paramCase(answers.controller) + '.mjs'
 
     /// /////////////////////////////////////////////////////////
     // Valida se diretório existe

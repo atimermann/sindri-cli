@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 /**
  * Inicializa Script do Sindri
+ *
+ * TODO: Mudar padrão de arquivos de CammelCase para ParamCase, seguindo padrão do nodejs
  */
 
 import { __dirname, loadJson } from '@agtm/utils'
