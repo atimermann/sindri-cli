@@ -99,6 +99,7 @@ const DIRNAME = __dirname(import.meta.url)
       APP: answers.app.replace(/-/g, '_'),
       AUTHOR: packageJson.author,
       CONTROLLER_FILE_NAME: controllerFileName,
+      CONTROLLER_ROUTE_NAME: changeCase.paramCase(answers.controller),
       CONTROLLER_NAME: changeCase.pascalCase(answers.controller)
     })
 
