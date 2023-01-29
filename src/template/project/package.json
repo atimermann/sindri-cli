@@ -6,6 +6,7 @@
   "main": "{{PACKAGE_MAIN}}",
   "scripts": {
     "config": "./scripts/config.sh",
+    "update": "npm update @agtm/sindri-cli @agtm/sindri-framework --save",
     "build": "./scripts/build.sh",
     "build-debug": "npx pkg -t node14-linux-x64 --out-path build .",
     "dev": "npx nodemon --loader=./esm-loader.mjs -e mjs,js,yaml,html .",
