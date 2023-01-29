@@ -62,7 +62,7 @@ import { __dirname, loadJson } from '@agtm/utils'
     const answers = await inquirer.prompt(questions)
 
     const appsPath = join(srcPath, 'apps', answers.app)
-    const controllerFileName = changeCase.camelCase(answers.controller) + '.js'
+    const controllerFileName = changeCase.camelCase(answers.controller) + '.mjs'
 
     /// /////////////////////////////////////////////////////////
     // Valida se diretório existe
@@ -95,7 +95,7 @@ import { __dirname, loadJson } from '@agtm/utils'
 
     console.log(`Criando controller "${answers.controller}"...`)
     await fs.copy(
-      join(templateAppPath, 'controllers', '__controller_template.js'),
+      join(templateAppPath, 'controllers', '__controller_template.mjs'),
       join(appsPath, 'controllers', controllerFileName)
     )
 

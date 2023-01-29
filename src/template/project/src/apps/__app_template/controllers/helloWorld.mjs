@@ -5,11 +5,7 @@
  * @author {{AUTHOR}}
  *
  */
-'use strict'
-
-import { Controller } from '@agtm/sindri-framework'
-import logger  from '@agtm/sindri-framework/logger.js'
-import config  from '@agtm/sindri-framework/config.js'
+import { Controller, logger, config } from '@agtm/sindri-framework'
 
 export default class HelloWorldController extends Controller {
   /**

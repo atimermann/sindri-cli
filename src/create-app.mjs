@@ -61,7 +61,7 @@ const DIRNAME = __dirname(import.meta.url)
     const answers = await inquirer.prompt(questions)
 
     const appPath = join(srcPath, 'apps', answers.app)
-    const controllerFileName = changeCase.camelCase(answers.controller) + '.js'
+    const controllerFileName = changeCase.camelCase(answers.controller) + '.mjs'
 
     /// /////////////////////////////////////////////////////////
     // Valida se diretório existe
@@ -83,7 +83,7 @@ const DIRNAME = __dirname(import.meta.url)
 
     console.log(`Criando app "${answers.app}"`)
     await fs.move(
-      join(appPath, 'controllers', '__controller_template.js'),
+      join(appPath, 'controllers', '__controller_template.mjs'),
       join(appPath, 'controllers', controllerFileName)
     )
 

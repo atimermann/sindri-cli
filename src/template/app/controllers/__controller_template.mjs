@@ -5,18 +5,15 @@
  * @author {{AUTHOR}}
  *
  */
-'use strict'
+import { Controller, logger, config } from '@agtm/sindri-framework'
 
-const Controller = require('@agtm/sindri-framework/controller')
-const logger = require('@agtm/sindri-framework/logger')
-const config = require('@agtm/sindri-framework/config')
-
-class {{CONTROLLER_NAME}}Controller extends Controller {
+export default class {{CONTROLLER_NAME}}Controller extends Controller {
   /**
    * Inicialização
    */
+
   setup () {
-    logger.info('ok')
+    logger.info(`App "{{APP}}" Controller "{{CONTROLLER_FILE_NAME}}" OK. Port: ${config('server.port')}`)
   }
 
   /**
@@ -31,4 +28,3 @@ class {{CONTROLLER_NAME}}Controller extends Controller {
   }
 }
 
-module.exports = {{CONTROLLER_NAME}}Controller
